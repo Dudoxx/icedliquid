@@ -1,0 +1,41 @@
+{
+  "streamingText": {
+    "label": "Gestreamter Text"
+  },
+  "streamdown": {
+    "close": "Schließen",
+    "copied": "Kopiert",
+    "copyCode": "Code kopieren",
+    "copyLink": "Link kopieren",
+    "copyTable": "Tabelle kopieren",
+    "copyTableAsCsv": "Tabelle als CSV kopieren",
+    "copyTableAsMarkdown": "Tabelle als Markdown kopieren",
+    "copyTableAsTsv": "Tabelle als TSV kopieren",
+    "downloadDiagram": "Diagramm herunterladen",
+    "downloadDiagramAsMmd": "Diagramm als MMD herunterladen",
+    "downloadDiagramAsPng": "Diagramm als PNG herunterladen",
+    "downloadDiagramAsSvg": "Diagramm als SVG herunterladen",
+    "downloadFile": "Datei herunterladen",
+    "downloadImage": "Bild herunterladen",
+    "downloadTable": "Tabelle herunterladen",
+    "downloadTableAsCsv": "Tabelle als CSV herunterladen",
+    "downloadTableAsMarkdown": "Tabelle als Markdown herunterladen",
+    "errorMermaid": "Das Diagramm konnte nicht dargestellt werden",
+    "exitFullscreen": "Vollbild beenden",
+    "externalLinkWarning": "Sie öffnen gleich einen externen Link.",
+    "imageNotAvailable": "Bild nicht verfügbar",
+    "mermaidAriaLabel": "Diagramm",
+    "mermaidFormatMmd": "MMD",
+    "mermaidFormatPng": "PNG",
+    "mermaidFormatSvg": "SVG",
+    "openExternalLink": "Externen Link öffnen",
+    "openLink": "Link öffnen",
+    "resetView": "Ansicht zurücksetzen",
+    "tableFormatCsv": "CSV",
+    "tableFormatMarkdown": "Markdown",
+    "tableFormatTsv": "TSV",
+    "viewFullscreen": "Vollbild anzeigen",
+    "zoomIn": "Vergrößern",
+    "zoomOut": "Verkleinern"
+  }
+}

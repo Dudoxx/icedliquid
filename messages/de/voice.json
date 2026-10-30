@@ -1,0 +1,148 @@
+{
+  "action": {
+    "start": "Sprechen starten",
+    "stop": "Stoppen",
+    "interrupt": "Unterbrechen"
+  },
+  "agentPage": {
+    "metaTitle": "icedLiquid — Sprachagent mit WebGPU",
+    "description": "Ein Live-Sprachassistent, der vollständig in diesem Browser läuft: Er hört zu, denkt mit dem LFM3-Omni-Modell auf WebGPU, ruft Werkzeuge für Wetter, Uhrzeit und Websuche auf und antwortet laut.",
+    "eyebrow": "Sprachagent · auf Liquid AIs LFM3-Omni",
+    "title": "Mit icedLiquid sprechen"
+  },
+  "stage": {
+    "controls": "icedLiquid-Steuerung",
+    "tagline": "Liquid AIs LFM3-Omni 2B · ONNX q4f16 · Hören, Denken und Sprechen laufen in diesem Browser mit WebGPU",
+    "state": {
+      "idle": "Bereit",
+      "loading": "Modell lädt …",
+      "listening": "Hört zu",
+      "hearing": "Hört Sie",
+      "thinking": "Denkt nach",
+      "tool": "Nutzt ein Werkzeug",
+      "speaking": "Spricht"
+    },
+    "wait": "Zeit bis zur Antwort",
+    "seconds": "{s} s",
+    "ms": "{ms} ms",
+    "chat": {
+      "label": "Gespräch",
+      "title": "Gespräch",
+      "empty": "Drücken Sie Start und fragen Sie nach dem Wetter, der Uhrzeit oder etwas im Web. Ihre Worte erscheinen hier, während Sie sprechen.",
+      "you": "Sie",
+      "live": "live",
+      "typing": "icedLiquid arbeitet",
+      "speaking": "spricht",
+      "assistant": "icedLiquid"
+    },
+    "tool": {
+      "running": "läuft",
+      "ok": "fertig",
+      "failed": "fehlgeschlagen"
+    },
+    "where": {
+      "server": "Server · Werkzeug-API",
+      "page": "Browser · Seite"
+    },
+    "pipeline": {
+      "label": "Ablauf",
+      "ears": "Hören",
+      "brain": "Denken",
+      "tools": "Werkzeuge",
+      "voice": "Stimme"
+    },
+    "gpuState": {
+      "idle": "nicht geladen",
+      "loading": "lädt",
+      "ready": "bereit",
+      "generating": "arbeitet",
+      "error": "Fehler"
+    },
+    "name": "icedLiquid",
+    "credit": "Danke an <link>Liquid AI</link> für ihre großartige Arbeit: Ihr offenes LFM3-Omni-Modell passt als kompletter Sprachassistent in einen einzigen Browser-Tab.",
+    "orb": "icedLiquid-Sprachkugel: {state}",
+    "gpu": "{vendor}-GPU · {family}-Familie (WebGPU)",
+    "card": {
+      "today": "Heute",
+      "wind": "Wind",
+      "humidity": "Luftfeuchte",
+      "rain": "Regen",
+      "meta": "{tool} · {ms} ms",
+      "feels": "gefühlt {temp}",
+      "sources": "{tool} · {n} Quellen · {ms} ms",
+      "open": "Quelle in neuem Tab öffnen",
+      "image": "Erzeugtes Bild"
+    },
+    "badge": {
+      "reply": "{s} s bis zur Antwort",
+      "replyTitle": "Zeit bis zur Antwort",
+      "context": "{n} Tok Kontext",
+      "contextTitle": "Kontext-Tokens",
+      "brain": "{n} Tok · {rate} Tok/s",
+      "brainTitle": "Denk-Tokens und Tempo",
+      "rounds": "{n} Runden",
+      "roundsTitle": "Modellrunden",
+      "voice": "Stimme {n} Tok · {rate} Tok/s",
+      "voiceTitle": "Sprach-Tokens und Tempo"
+    },
+    "session": {
+      "turns": "{n} Runden",
+      "turnsTitle": "beantwortete Runden",
+      "tokens": "{n} Tokens",
+      "tokensTitle": "Tokens dieser Sitzung",
+      "rate": "{rate} Tok/s im Mittel",
+      "rateTitle": "mittleres Denk-Tempo",
+      "context": "Kontext {n} Tok",
+      "contextTitle": "letzte Kontextgröße"
+    },
+    "save": {
+      "label": "Lauf speichern",
+      "saving": "Lauf wird gespeichert…",
+      "saved": "Gespeichert unter",
+      "failed": "Der Lauf wurde nicht gespeichert"
+    },
+    "whereShort": {
+      "browser": "WebGPU",
+      "server": "Server"
+    },
+    "model": {
+      "noAdapter": "GPU noch nicht geöffnet",
+      "loading": "Modellgewichte werden geladen",
+      "fromCache": "Gewichte aus dem Browser-Cache: {loaded} von {total} MB",
+      "downloading": "Gewichte einmalig herunterladen: {loaded} von {total} MB (danach im Cache)",
+      "ready": "{mb} MB auf der GPU · geladen in {s} s {source}",
+      "sourceCache": "aus dem Browser-Cache",
+      "sourceNetwork": "aus dem Netz",
+      "cached": "{mb} MB Gewichte im Browser-Cache · wird vorgewärmt",
+      "notCached": "Gewichte noch nicht im Cache: der erste Start lädt sie einmal herunter"
+    },
+    "fullscreen": {
+      "enter": "Vollbild",
+      "exit": "Vollbild beenden",
+      "hint": "Esc zum Beenden"
+    },
+    "input": {
+      "label": "Nachricht an icedLiquid tippen",
+      "placeholder": "Frage tippen oder ein Bild wünschen …",
+      "startFirst": "Zuerst „Sprechen starten“ drücken",
+      "busy": "icedLiquid ist beschäftigt: weiter tippen, Senden geht wieder, sobald es zuhört",
+      "send": "Senden",
+      "hint": "Enter sendet · Umschalt+Enter neue Zeile · die Antwort wird auch gesprochen"
+    },
+    "tools": {
+      "get_weather": "Wetter",
+      "get_time": "Uhrzeit",
+      "web_search": "Websuche",
+      "generate_image": "Bild",
+      "set_theme": "Darstellung",
+      "set_locale": "Sprache",
+      "end_session": "Sitzung beenden"
+    },
+    "image": {
+      "download": "Herunterladen",
+      "open": "Bild in voller Größe öffnen",
+      "title": "Erzeugtes Bild",
+      "close": "Schließen"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "name": "icedLiquid",
+    "description": "Un assistant vocal qui fonctionne entièrement dans votre navigateur sur WebGPU, construit sur Liquid AI LFM3-Omni."
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "body": "Cette adresse n’existe pas. L’assistant vocal est à un clic.",
+    "back": "Ouvrir l’assistant vocal"
+  },
+  "header": {
+    "home": "Accueil d’icedLiquid",
+    "locale": {
+      "label": "Changer de langue",
+      "names": {
+        "en": "Anglais",
+        "de": "Allemand",
+        "fr": "Français",
+        "es": "Espagnol"
+      }
+    },
+    "theme": {
+      "label": "Mode de couleur",
+      "toDark": "Passer en mode sombre",
+      "toLight": "Passer en mode clair"
+    }
+  },
+  "footer": {
+    "label": "Pied de page",
+    "copyright": "© Dudoxx UG",
+    "credit": "Construit sur <link>LFM3-Omni de Liquid AI</link>"
+  }
+}

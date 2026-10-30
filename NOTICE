@@ -1,0 +1,79 @@
+icedLiquid
+© 2026 Dudoxx UG / Acceleate Consulting - Walid Boudabbous
+
+This product includes software developed by Dudoxx UG (https://www.dudoxx.com).
+The source code in this repository is licensed under the Apache License,
+Version 2.0. See the LICENSE file.
+
+
+Model credit
+------------
+
+icedLiquid is built on LFM3-Omni by Liquid AI (https://www.liquid.ai).
+Thank you to Liquid AI for releasing an open multimodal model that can listen,
+think and speak inside one browser tab.
+
+icedLiquid is an independent project by Dudoxx UG. It is not made, endorsed
+or sponsored by Liquid AI. "Liquid AI" and "LFM" are names of Liquid AI, Inc.
+
+
+Model weights: separate license
+-------------------------------
+
+The model weights are NOT part of this repository and are NOT covered by the
+Apache License 2.0 above.
+
+`pnpm models:provision` downloads them from Hugging Face, from the model
+repository LiquidAI/LFM3-Omni-2B-ONNX at the pinned revision
+7d6bd3fd59a0622e5ce7fefc141145a8bba1435a:
+
+  https://huggingface.co/LiquidAI/LFM3-Omni-2B-ONNX
+
+The Hugging Face model card of that repository (read on 2026-10-30) declares
+`license: other` with `license_name: lfm1.0` and links the LICENSE file of the
+model repository. That file is titled "LFM Open License v1.0", with Liquid
+AI, Inc. as Licensor:
+
+  https://huggingface.co/LiquidAI/LFM3-Omni-2B-ONNX/blob/main/LICENSE
+
+The LFM Open License v1.0 has its own terms, including a limitation on
+Commercial Use above a revenue threshold. Read it before you use, ship or
+redistribute the weights. When you download the weights, you accept that
+license with Liquid AI, Inc., not with Dudoxx UG.
+
+
+Third-party software
+--------------------
+
+icedLiquid installs these packages from npm (see package.json). Each keeps
+its own license; none of their code is copied into this repository.
+
+  onnxruntime-web           MIT          (Microsoft)
+  next                      MIT
+  react, react-dom          MIT
+  next-intl                 MIT
+  next-themes               MIT
+  @base-ui/react            MIT
+  @huggingface/jinja        MIT
+  @huggingface/tokenizers   Apache-2.0
+  class-variance-authority  Apache-2.0
+  clsx                      MIT
+  lucide-react              ISC
+  streamdown                Apache-2.0
+  tailwind-merge            MIT
+  tailwindcss               MIT
+  zod                       MIT
+  server-only               MIT
+
+`pnpm dev` and `pnpm build` copy the onnxruntime-web runtime files (.wasm,
+.mjs) into public/ort/. That folder is git-ignored and is not distributed with
+the source.
+
+The fonts Urbanist, Inter and JetBrains Mono are loaded through next/font
+from Google Fonts at build time. They are licensed under the SIL Open Font
+License 1.1.
+
+The tools of the voice agent call these services from your server at run
+time: WeatherAPI.com, Exa and OpenRouter (only when you set their key), and
+the keyless Open-Meteo geocoding API (to find a place name for the weather
+tool). Their terms of service apply to your use of them.

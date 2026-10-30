@@ -1,0 +1,6 @@
+# pnpm 11+ reads build-script policy from this file (`.npmrc` is for registry/auth only).
+# allowBuilds: `true` = the package's install script may run, `false` = skipped silently.
+allowBuilds:
+  '@parcel/watcher': true
+  '@swc/core': false
+  protobufjs: false

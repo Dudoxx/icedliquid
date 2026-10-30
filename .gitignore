@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# onnxruntime-web runtime files (copied by scripts/copy-ort-assets.mjs)
+public/ort/
+
+# Model weights (downloaded by pnpm models:provision)
+/models/
+
+# Environment
+.env*
+!.env.example
+
+# Logs and OS files
+*.log
+.DS_Store

@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "name": "icedLiquid",
+    "description": "Ein Sprachassistent, der vollständig in Ihrem Browser auf WebGPU läuft, gebaut auf Liquid AI LFM3-Omni."
+  },
+  "notFound": {
+    "title": "Seite nicht gefunden",
+    "body": "Diese Adresse gibt es nicht. Der Sprachassistent ist nur einen Klick entfernt.",
+    "back": "Sprachassistent öffnen"
+  },
+  "header": {
+    "home": "Startseite von icedLiquid",
+    "locale": {
+      "label": "Sprache wechseln",
+      "names": {
+        "en": "Englisch",
+        "de": "Deutsch",
+        "fr": "Französisch",
+        "es": "Spanisch"
+      }
+    },
+    "theme": {
+      "label": "Farbmodus",
+      "toDark": "Zum dunklen Modus wechseln",
+      "toLight": "Zum hellen Modus wechseln"
+    }
+  },
+  "footer": {
+    "label": "Fußzeile",
+    "copyright": "© Dudoxx UG",
+    "credit": "Gebaut auf <link>LFM3-Omni von Liquid AI</link>"
+  }
+}

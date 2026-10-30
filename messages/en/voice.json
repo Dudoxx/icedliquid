@@ -1,0 +1,148 @@
+{
+  "action": {
+    "start": "Start talking",
+    "stop": "Stop",
+    "interrupt": "Interrupt"
+  },
+  "agentPage": {
+    "metaTitle": "icedLiquid — voice agent on WebGPU",
+    "description": "A live voice assistant that runs entirely in this browser: it listens, thinks with the LFM3-Omni model on WebGPU, calls tools for the weather, the time and web search, and answers aloud.",
+    "eyebrow": "Voice agent · built on Liquid AI's LFM3-Omni",
+    "title": "Talk with icedLiquid"
+  },
+  "stage": {
+    "controls": "icedLiquid controls",
+    "tagline": "Liquid AI's LFM3-Omni 2B · ONNX q4f16 · ears, brain and voice run in this browser on WebGPU",
+    "state": {
+      "idle": "Ready",
+      "loading": "Loading model…",
+      "listening": "Listening",
+      "hearing": "Hearing you",
+      "thinking": "Thinking",
+      "tool": "Using a tool",
+      "speaking": "Speaking"
+    },
+    "wait": "Time to answer",
+    "seconds": "{s} s",
+    "ms": "{ms} ms",
+    "chat": {
+      "label": "Conversation",
+      "title": "Conversation",
+      "empty": "Press Start and ask about the weather, the time, or anything on the web. Your words appear here as you speak.",
+      "you": "You",
+      "live": "live",
+      "typing": "icedLiquid is working",
+      "speaking": "speaking",
+      "assistant": "icedLiquid"
+    },
+    "tool": {
+      "running": "running",
+      "ok": "done",
+      "failed": "failed"
+    },
+    "where": {
+      "server": "Server · tool API",
+      "page": "Browser · page"
+    },
+    "pipeline": {
+      "label": "Pipeline",
+      "ears": "Ears",
+      "brain": "Brain",
+      "tools": "Tools",
+      "voice": "Voice"
+    },
+    "gpuState": {
+      "idle": "not loaded",
+      "loading": "loading",
+      "ready": "ready",
+      "generating": "working",
+      "error": "error"
+    },
+    "name": "icedLiquid",
+    "credit": "With thanks to <link>Liquid AI</link> for their great work: their open LFM3-Omni model fits a full voice assistant inside one browser tab.",
+    "orb": "icedLiquid voice orb: {state}",
+    "gpu": "{vendor} GPU · {family} family (WebGPU)",
+    "card": {
+      "today": "Today",
+      "wind": "Wind",
+      "humidity": "Humidity",
+      "rain": "Rain",
+      "meta": "{tool} · {ms} ms",
+      "feels": "feels like {temp}",
+      "sources": "{tool} · {n} sources · {ms} ms",
+      "open": "open source in a new tab",
+      "image": "Generated image"
+    },
+    "badge": {
+      "reply": "{s} s to answer",
+      "replyTitle": "time to answer",
+      "context": "{n} tok context",
+      "contextTitle": "context tokens",
+      "brain": "{n} tok · {rate} tok/s",
+      "brainTitle": "brain tokens and speed",
+      "rounds": "{n} rounds",
+      "roundsTitle": "model rounds",
+      "voice": "voice {n} tok · {rate} tok/s",
+      "voiceTitle": "speech tokens and speed"
+    },
+    "session": {
+      "turns": "{n} turns",
+      "turnsTitle": "answered turns",
+      "tokens": "{n} tokens",
+      "tokensTitle": "tokens this session",
+      "rate": "{rate} tok/s mean",
+      "rateTitle": "mean brain speed",
+      "context": "context {n} tok",
+      "contextTitle": "last context size"
+    },
+    "save": {
+      "label": "Save run",
+      "saving": "Saving the run…",
+      "saved": "Saved to",
+      "failed": "The run was not saved"
+    },
+    "whereShort": {
+      "browser": "WebGPU",
+      "server": "Server"
+    },
+    "model": {
+      "noAdapter": "GPU not opened yet",
+      "loading": "Loading model weights",
+      "fromCache": "Loading weights from browser cache: {loaded} of {total} MB",
+      "downloading": "Downloading weights once: {loaded} of {total} MB (cached afterwards)",
+      "ready": "{mb} MB on GPU · loaded in {s} s {source}",
+      "sourceCache": "from browser cache",
+      "sourceNetwork": "from the network",
+      "cached": "{mb} MB of weights in browser cache · warming up",
+      "notCached": "Weights not cached yet: the first start downloads them once"
+    },
+    "fullscreen": {
+      "enter": "Full screen",
+      "exit": "Quit full screen",
+      "hint": "Press Esc to exit"
+    },
+    "input": {
+      "label": "Type a message to icedLiquid",
+      "placeholder": "Type a question, or ask for a picture…",
+      "startFirst": "Press Start talking first",
+      "busy": "icedLiquid is busy: keep typing, Send opens when it listens again",
+      "send": "Send",
+      "hint": "Enter sends · Shift+Enter for a new line · the answer is also spoken"
+    },
+    "tools": {
+      "get_weather": "Weather",
+      "get_time": "Time",
+      "web_search": "Web search",
+      "generate_image": "Image",
+      "set_theme": "Theme",
+      "set_locale": "Language",
+      "end_session": "End session"
+    },
+    "image": {
+      "download": "Download",
+      "open": "Open image full size",
+      "title": "Generated image",
+      "close": "Close"
+    }
+  }
+}

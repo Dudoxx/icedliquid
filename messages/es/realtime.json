@@ -1,0 +1,41 @@
+{
+  "streamingText": {
+    "label": "Texto transmitido"
+  },
+  "streamdown": {
+    "close": "Cerrar",
+    "copied": "Copiado",
+    "copyCode": "Copiar código",
+    "copyLink": "Copiar enlace",
+    "copyTable": "Copiar tabla",
+    "copyTableAsCsv": "Copiar tabla como CSV",
+    "copyTableAsMarkdown": "Copiar tabla como Markdown",
+    "copyTableAsTsv": "Copiar tabla como TSV",
+    "downloadDiagram": "Descargar diagrama",
+    "downloadDiagramAsMmd": "Descargar diagrama como MMD",
+    "downloadDiagramAsPng": "Descargar diagrama como PNG",
+    "downloadDiagramAsSvg": "Descargar diagrama como SVG",
+    "downloadFile": "Descargar archivo",
+    "downloadImage": "Descargar imagen",
+    "downloadTable": "Descargar tabla",
+    "downloadTableAsCsv": "Descargar tabla como CSV",
+    "downloadTableAsMarkdown": "Descargar tabla como Markdown",
+    "errorMermaid": "No se pudo mostrar el diagrama",
+    "exitFullscreen": "Salir de pantalla completa",
+    "externalLinkWarning": "Va a abrir un enlace externo.",
+    "imageNotAvailable": "Imagen no disponible",
+    "mermaidAriaLabel": "Diagrama",
+    "mermaidFormatMmd": "MMD",
+    "mermaidFormatPng": "PNG",
+    "mermaidFormatSvg": "SVG",
+    "openExternalLink": "Abrir enlace externo",
+    "openLink": "Abrir enlace",
+    "resetView": "Restablecer vista",
+    "tableFormatCsv": "CSV",
+    "tableFormatMarkdown": "Markdown",
+    "tableFormatTsv": "TSV",
+    "viewFullscreen": "Ver en pantalla completa",
+    "zoomIn": "Acercar",
+    "zoomOut": "Alejar"
+  }
+}

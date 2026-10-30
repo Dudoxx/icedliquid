@@ -1,0 +1,148 @@
+{
+  "action": {
+    "start": "Empezar a hablar",
+    "stop": "Detener",
+    "interrupt": "Interrumpir"
+  },
+  "agentPage": {
+    "metaTitle": "icedLiquid — agente de voz con WebGPU",
+    "description": "Un asistente de voz en vivo que funciona por completo en este navegador: escucha, piensa con el modelo LFM3-Omni en WebGPU, usa herramientas para el tiempo, la hora y la búsqueda web, y responde en voz alta.",
+    "eyebrow": "Agente de voz · sobre LFM3-Omni de Liquid AI",
+    "title": "Habla con icedLiquid"
+  },
+  "stage": {
+    "controls": "Controles de icedLiquid",
+    "tagline": "LFM3-Omni 2B de Liquid AI · ONNX q4f16 · oído, cerebro y voz corren en este navegador con WebGPU",
+    "state": {
+      "idle": "Listo",
+      "loading": "Cargando modelo…",
+      "listening": "Escuchando",
+      "hearing": "Te oye",
+      "thinking": "Pensando",
+      "tool": "Usando una herramienta",
+      "speaking": "Hablando"
+    },
+    "wait": "Tiempo de respuesta",
+    "seconds": "{s} s",
+    "ms": "{ms} ms",
+    "chat": {
+      "label": "Conversación",
+      "title": "Conversación",
+      "empty": "Pulsa Iniciar y pregunta por el tiempo, la hora o algo en la web. Tus palabras aparecen aquí mientras hablas.",
+      "you": "Tú",
+      "live": "en vivo",
+      "typing": "icedLiquid está trabajando",
+      "speaking": "hablando",
+      "assistant": "icedLiquid"
+    },
+    "tool": {
+      "running": "en curso",
+      "ok": "hecho",
+      "failed": "falló"
+    },
+    "where": {
+      "server": "Servidor · API de herramientas",
+      "page": "Navegador · página"
+    },
+    "pipeline": {
+      "label": "Cadena",
+      "ears": "Oído",
+      "brain": "Cerebro",
+      "tools": "Herramientas",
+      "voice": "Voz"
+    },
+    "gpuState": {
+      "idle": "no cargado",
+      "loading": "cargando",
+      "ready": "listo",
+      "generating": "trabajando",
+      "error": "error"
+    },
+    "name": "icedLiquid",
+    "credit": "Gracias a <link>Liquid AI</link> por su gran trabajo: su modelo abierto LFM3-Omni hace que un asistente de voz completo quepa en una sola pestaña.",
+    "orb": "Orbe de voz de icedLiquid: {state}",
+    "gpu": "GPU {vendor} · familia {family} (WebGPU)",
+    "card": {
+      "today": "Hoy",
+      "wind": "Viento",
+      "humidity": "Humedad",
+      "rain": "Lluvia",
+      "meta": "{tool} · {ms} ms",
+      "feels": "sensación {temp}",
+      "sources": "{tool} · {n} fuentes · {ms} ms",
+      "open": "abrir la fuente en una pestaña nueva",
+      "image": "Imagen generada"
+    },
+    "badge": {
+      "reply": "{s} s para responder",
+      "replyTitle": "tiempo de respuesta",
+      "context": "contexto {n} tokens",
+      "contextTitle": "tokens de contexto",
+      "brain": "{n} tokens · {rate} tokens/s",
+      "brainTitle": "tokens del cerebro y velocidad",
+      "rounds": "{n} pasadas",
+      "roundsTitle": "pasadas del modelo",
+      "voice": "voz {n} tokens · {rate} tokens/s",
+      "voiceTitle": "tokens de voz y velocidad"
+    },
+    "session": {
+      "turns": "{n} turnos",
+      "turnsTitle": "turnos respondidos",
+      "tokens": "{n} tokens",
+      "tokensTitle": "tokens de la sesión",
+      "rate": "{rate} tokens/s de media",
+      "rateTitle": "velocidad media del cerebro",
+      "context": "contexto {n} tokens",
+      "contextTitle": "último tamaño de contexto"
+    },
+    "save": {
+      "label": "Guardar la sesión",
+      "saving": "Guardando la sesión…",
+      "saved": "Guardada en",
+      "failed": "La sesión no se ha guardado"
+    },
+    "whereShort": {
+      "browser": "WebGPU",
+      "server": "Servidor"
+    },
+    "model": {
+      "noAdapter": "GPU aún no abierta",
+      "loading": "Cargando los pesos del modelo",
+      "fromCache": "Pesos desde la caché del navegador: {loaded} de {total} MB",
+      "downloading": "Descarga única de los pesos: {loaded} de {total} MB (después en caché)",
+      "ready": "{mb} MB en la GPU · cargado en {s} s {source}",
+      "sourceCache": "desde la caché del navegador",
+      "sourceNetwork": "desde la red",
+      "cached": "{mb} MB de pesos en caché · calentando",
+      "notCached": "Pesos aún no en caché: el primer inicio los descarga una vez"
+    },
+    "fullscreen": {
+      "enter": "Pantalla completa",
+      "exit": "Salir de pantalla completa",
+      "hint": "Pulsa Esc para salir"
+    },
+    "input": {
+      "label": "Escribe un mensaje a icedLiquid",
+      "placeholder": "Escribe una pregunta o pide una imagen…",
+      "startFirst": "Pulsa primero Empezar a hablar",
+      "busy": "icedLiquid está ocupado: sigue escribiendo, Enviar vuelve cuando escuche",
+      "send": "Enviar",
+      "hint": "Intro envía · Mayús+Intro nueva línea · la respuesta también se dice en voz alta"
+    },
+    "tools": {
+      "get_weather": "Tiempo",
+      "get_time": "Hora",
+      "web_search": "Búsqueda web",
+      "generate_image": "Imagen",
+      "set_theme": "Tema",
+      "set_locale": "Idioma",
+      "end_session": "Terminar sesión"
+    },
+    "image": {
+      "download": "Descargar",
+      "open": "Abrir la imagen a tamaño completo",
+      "title": "Imagen generada",
+      "close": "Cerrar"
+    }
+  }
+}

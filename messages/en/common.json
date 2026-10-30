@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "name": "icedLiquid",
+    "description": "A voice assistant that runs fully in your browser on WebGPU, built on Liquid AI LFM3-Omni."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "This address does not exist. The voice assistant is one click away.",
+    "back": "Open the voice assistant"
+  },
+  "header": {
+    "home": "icedLiquid home",
+    "locale": {
+      "label": "Change language",
+      "names": {
+        "en": "English",
+        "de": "German",
+        "fr": "French",
+        "es": "Spanish"
+      }
+    },
+    "theme": {
+      "label": "Colour mode",
+      "toDark": "Switch to dark mode",
+      "toLight": "Switch to light mode"
+    }
+  },
+  "footer": {
+    "label": "Site footer",
+    "copyright": "© Dudoxx UG",
+    "credit": "Built on <link>LFM3-Omni by Liquid AI</link>"
+  }
+}

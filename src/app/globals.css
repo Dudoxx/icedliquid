@@ -1,0 +1,498 @@
+/* ============================================================
+ * globals.css — Tailwind 4.3 CSS-first entry for icedLiquid
+ * © Dudoxx UG / Acceleate Consulting - Walid Boudabbous <walid@acceleate.com>
+ *
+ * Value authority: ../styles/brands/dudoxx.css (generated brand tokens, never hand-edit it).
+ * This file holds NO colour, shadow, font or motion value. It only:
+ *   1. imports Tailwind, then the brand file (AFTER Tailwind);
+ *   2. declares the ONE app bridge (@theme inline) onto the brand's --token-* names;
+ *   3. sets base, geometry and motion rules that read those tokens.
+ * Brand + mode are orthogonal: <html data-brand="dudoxx" class="dark">.
+ * ============================================================ */
+@layer tokens, base, components, utilities;
+@import 'tailwindcss';
+@import '../styles/brands/dudoxx.css';
+/* streamdown ships Tailwind classes in its dist; Tailwind must scan them. */
+@source "../../node_modules/streamdown/dist/*.js";
+
+@custom-variant dark (&:where(.dark, .dark *));
+/* Height constraint variant — Tailwind ships no height breakpoint. */
+@custom-variant short (@media (max-height: 47.5rem));
+
+/* ------------------------------------------------------------
+ * Mode bridges — which token sits on a strong fill, and the scrim ink.
+ * Light: paper ink on dark fills. Dark: night ground ink on light fills.
+ * ------------------------------------------------------------ */
+:root {
+  --ui-on-strong: var(--token-color-paper);
+  --ui-scrim: var(--token-color-fg);
+  /* A card ON the card-filled content panel: light separates by shadow alone. */
+  --ui-lifted: var(--token-color-card, var(--token-color-paper));
+  /* Wash steps of --color-wash-* (fg ink share): hover < selected < active. */
+  --ui-wash-hover: 5%;
+  --ui-wash-selected: 8%;
+  --ui-wash-active: 12%;
+}
+.dark {
+  --ui-on-strong: var(--token-color-bg);
+  --ui-scrim: var(--token-color-bg-recessed);
+  /* Dark depth = lighter surface: one computed step above the panel fill. */
+  --ui-lifted: color-mix(in oklch, var(--token-color-card), var(--token-color-fg) 6%);
+  --ui-wash-hover: 8%;
+  --ui-wash-selected: 12%;
+  --ui-wash-active: 16%;
+}
+
+/* ============================================================
+ * THE ONE APP BRIDGE — declared after the brand file, so a name here
+ * re-maps the brand file's own mapping (later wins). Names the brand file
+ * already maps correctly (background, foreground, card, popover, muted,
+ * primary, secondary, border, input, ring, chart-1..5, sidebar-*, signal,
+ * admonition-*, shadow-elev-1..4, spacing-*, ease-*) are NOT restated.
+ * `inline` so utilities emit var() and follow data-brand / .dark at runtime.
+ * ============================================================ */
+@theme inline {
+  /* --- Colour: re-maps --- */
+  /* shadcn `accent` = hover / selected WASH, not the strong deep cobalt. */
+  --color-accent: var(--token-color-accent-soft, var(--token-color-secondary));
+  --color-accent-foreground: var(--token-color-fg);
+  --color-footer: var(--token-color-footer, var(--token-color-bg-recessed));
+  --color-footer-foreground: var(--token-color-muted-foreground, var(--token-color-fg-secondary));
+
+  /* --- Colour: state deltas --- */
+  --color-primary-hover: color-mix(in oklch, var(--token-color-primary), var(--token-color-fg) 12%);
+  --color-secondary-hover: color-mix(
+    in oklch,
+    var(--token-color-secondary),
+    var(--token-color-fg) 8%
+  );
+  --color-destructive-hover: color-mix(
+    in oklch,
+    var(--token-color-destructive),
+    var(--token-color-fg) 12%
+  );
+  --color-nav-hover: var(--token-color-muted, var(--token-color-bg-recessed));
+  /* Tonal fill of the secondary button: the cobalt wash, visible on bg, recessed and card. */
+  --color-tonal: var(--token-color-accent-soft, var(--token-color-secondary));
+  --color-tonal-foreground: var(--token-color-fg);
+  --color-tonal-hover: color-mix(
+    in oklch,
+    var(--token-color-accent-soft, var(--token-color-secondary)),
+    var(--token-color-primary) 14%
+  );
+  --color-nav-hover-foreground: var(--token-color-fg);
+  /* Ink-alpha washes + borders: the fg ink mixed into transparent, so
+   * one step reads the same on bg, recessed and card. Steps grow hover < selected < active;
+   * the dark steps are wider (--ui-wash-*, set per mode above). Nav, menu and list rows use these. */
+  --color-wash-hover: color-mix(in oklch, var(--token-color-fg) var(--ui-wash-hover), transparent);
+  --color-wash-selected: color-mix(
+    in oklch,
+    var(--token-color-fg) var(--ui-wash-selected),
+    transparent
+  );
+  --color-wash-active: color-mix(
+    in oklch,
+    var(--token-color-fg) var(--ui-wash-active),
+    transparent
+  );
+  --color-border-subtle: color-mix(in oklch, var(--token-color-fg) 5%, transparent);
+  --color-border-strong: color-mix(in oklch, var(--token-color-fg) 12%, transparent);
+
+  /* --- Colour: foregrounds on strong semantic fills --- */
+  --color-destructive-foreground: var(--ui-on-strong);
+  --color-success-foreground: var(--ui-on-strong);
+  --color-warning-foreground: var(--ui-on-strong);
+  --color-info: var(--token-color-link, var(--token-color-accent));
+  --color-info-foreground: var(--ui-on-strong);
+
+  /* --- Colour: category aliases on the same tokens --- */
+  --color-surface: var(--token-color-bg);
+  --color-surface-muted: var(--token-color-bg-recessed);
+  --color-elevated: var(--token-color-card, var(--token-color-paper));
+  /* Card on a card-filled panel: lighter than the panel in dark. */
+  --color-lifted: var(--ui-lifted);
+  --color-danger: var(--token-color-destructive);
+  --color-danger-foreground: var(--ui-on-strong);
+  --color-disabled: var(--token-color-fg-tertiary);
+  --color-overlay: color-mix(in oklch, var(--ui-scrim) 55%, transparent);
+
+  /* --- Type: next/font families first, contract stacks as fallback --- */
+  --font-sans: var(--font-inter), var(--token-font-body);
+  --font-display:
+    var(--font-urbanist),
+    var(--token-font-display, var(--token-font-heading));
+  --font-mono: var(--font-jbmono), var(--token-font-mono);
+  --font-serif: var(--font-display); /* no serif ships for Dudoxx; legacy utility → display */
+
+  /* Display tracking + data line-height roles (D-016: Urbanist 600–700, −0.01em). */
+  --tracking-display: -0.01em;
+  --leading-data: 1.4;
+
+  /* UI type scale: FOUR steps, each a size + line-height PAIR on the 4 px unit,
+   * times --text-scale.
+   *   xs 12/16 · sm 13/20 · base 14/20 · lg 16/24. No fifth UI step, no `text-[..]`.
+   * text-xl and up stay Tailwind's heading steps; the display steps below follow --text-scale. */
+  --text-xs: calc(var(--token-spacing-xs) * 3 * var(--text-scale));
+  --text-xs--line-height: calc(var(--token-spacing-xs) * 4 * var(--text-scale));
+  --text-sm: calc(var(--token-spacing-xs) * 3.25 * var(--text-scale));
+  --text-sm--line-height: calc(var(--token-spacing-xs) * 5 * var(--text-scale));
+  --text-base: calc(var(--token-spacing-xs) * 3.5 * var(--text-scale));
+  --text-base--line-height: calc(var(--token-spacing-xs) * 5 * var(--text-scale));
+  --text-lg: calc(var(--token-spacing-xs) * 4 * var(--text-scale));
+  --text-lg--line-height: calc(var(--token-spacing-xs) * 6 * var(--text-scale));
+
+  /* Display scale, on the spacing tokens. */
+  --text-display-sm: calc(var(--token-spacing-md) * 2.25 * var(--text-scale));
+  --text-display-sm--line-height: 1.15;
+  --text-display-sm--letter-spacing: -0.01em;
+  --text-display-md: calc(var(--token-spacing-md) * 3 * var(--text-scale));
+  --text-display-md--line-height: 1.1;
+  --text-display-md--letter-spacing: -0.01em;
+  --text-display-xl: calc(var(--token-spacing-xxl) * var(--text-scale));
+  --text-display-xl--line-height: 1.05;
+  --text-display-xl--letter-spacing: -0.01em;
+
+  /* --- Radius by role (control / card / modal / pill) ---
+   * inner   4px  — marks inside a control (checkbox, menu item, kbd, swatch)
+   * control 8px  — buttons, inputs, selects, chips, nav rows, segmented controls
+   * card    12px — cards, panels, wells, tiles, tables, popovers, menus, select lists
+   * modal   16px — dialogs, sheets, drawers, the command palette
+   * pill    full — the badge / status pill / avatar shape only */
+  --radius-inner: var(--token-spacing-xs);
+  --radius-control: var(--token-spacing-sm);
+  --radius-card: calc(var(--token-spacing-sm) * 1.5);
+  --radius-modal: var(--token-spacing-md);
+  --radius-pill: calc(infinity * 1px);
+  /* Concentric rule: inner radius = outer radius − inset. A menu item sits
+   * p-xs inside a rounded-card panel, so its radius is card − xs (8 px), never a free pick. */
+  --radius-menu-item: calc(var(--radius-card) - var(--token-spacing-xs));
+
+  /* --- Radius guard: every Tailwind default step lands on one role step, so a shadcn
+   *     `rounded-md` / `rounded-xl` cannot invent a sixth radius. --- */
+  --radius-xs: var(--radius-inner);
+  --radius-sm: var(--radius-inner);
+  --radius-md: var(--radius-control);
+  --radius-lg: var(--radius-control);
+  --radius-xl: var(--radius-card);
+  --radius-2xl: var(--radius-card);
+  --radius-3xl: var(--radius-modal);
+  --radius-4xl: var(--radius-pill);
+
+  /* --- Elevation guard: no Tailwind default step may emit a grey shadow --- */
+  --shadow-2xs: var(--token-shadow-elev-1);
+  --shadow-xs: var(--token-shadow-elev-1);
+  --shadow-2xl: var(--token-shadow-elev-4);
+  --inset-shadow-2xs: var(--token-inset-shadow-1);
+  --inset-shadow-xs: var(--token-inset-shadow-1);
+  --inset-shadow-sm: var(--token-inset-shadow-1);
+
+  /* --- Elevation by role — one step per surface kind ---
+   * (no class)            none   — controls, chips, nav rows, inner wells (tonal fill only)
+   * shadow-raised         elev-1 — the primary CTA, cards, tiles, tables, the content panel
+   * shadow-hover          elev-2 — an interactive card under the pointer, a lifted card in dark
+   * shadow-float          elev-3 — popovers, menus, selects, tooltips, toasts, command palette
+   * shadow-modal          elev-4 — dialogs, sheets, drawers
+   * Names never reuse a --color-* name (shadow-card would also match the card colour). */
+  --shadow-raised: var(--token-shadow-elev-1);
+  --shadow-hover: var(--token-shadow-elev-2);
+  --shadow-float: var(--token-shadow-elev-3);
+  --shadow-modal: var(--token-shadow-elev-4);
+
+  /* --- Spacing rhythm — named steps on the spacing tokens ---
+   * p-card 24px (card padding) · gap-section 40px (between page sections) ·
+   * gap-field 24px (between form fields) · gap-stack 16px (blocks inside a card) ·
+   * gap-inline 8px (buttons, chips, icon + label) · gap-tight 4px (label → hint) */
+  --spacing-tight: var(--token-spacing-xs);
+  --spacing-inline: var(--token-spacing-sm);
+  --spacing-field: var(--token-spacing-lg);
+  --spacing-stack: var(--token-spacing-md);
+  --spacing-card: var(--token-spacing-lg);
+  --spacing-section: var(--token-spacing-xl);
+
+  /* --- Containers (max-w-narrow / -prose / -content), 4px-unit multiples --- */
+  --container-narrow: calc(var(--token-spacing-xs) * 144);
+  --container-prose: calc(var(--token-spacing-xs) * 168);
+  --container-content: calc(var(--token-spacing-xs) * 288);
+
+  /* No --breakpoint-* overrides here: Tailwind turns them into @media conditions, and a
+   * media condition cannot read var() — calc(var(--token-…)) broke the CSS parse.
+   * Tailwind's default breakpoints stay in force. */
+}
+
+/* ============================================================
+ * MOTION — named duration utilities, ONLY from --token-duration-*
+ *. Set --tw-duration too so tw-animate-css
+ * enter/exit animations follow the same token.
+ * ============================================================ */
+@utility duration-instant {
+  --tw-duration: var(--token-duration-instant);
+  transition-duration: var(--token-duration-instant);
+}
+@utility duration-fast {
+  --tw-duration: var(--token-duration-fast);
+  transition-duration: var(--token-duration-fast);
+}
+@utility duration-base {
+  --tw-duration: var(--token-duration-base);
+  transition-duration: var(--token-duration-base);
+}
+@utility duration-slow {
+  --tw-duration: var(--token-duration-slow);
+  transition-duration: var(--token-duration-slow);
+}
+@utility duration-page {
+  --tw-duration: var(--token-duration-page);
+  transition-duration: var(--token-duration-page);
+}
+
+/* ============================================================
+ * EDITORIAL + CHROME UTILITIES — token-driven, borderless containers.
+ * ============================================================ */
+@utility eyebrow {
+  /* Small uppercase kicker above an editorial title. */
+  display: inline-flex;
+  align-items: center;
+  gap: var(--token-spacing-sm);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
+}
+
+@utility hairline {
+  /* Thin divider inside content (a rule, not a container frame). */
+  border: 0;
+  border-top: var(--hairline-w) solid var(--color-border);
+}
+
+@utility surface {
+  /* Card surface: fill step + elevation, NO border. */
+  background-color: var(--color-card);
+  color: var(--color-card-foreground);
+  box-shadow: var(--shadow-elev-1);
+  border-radius: var(--radius-card);
+}
+
+@utility numeric-display {
+  /* Editorial big number — display face, tabular figures. */
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.01em;
+  line-height: var(--leading-tight);
+}
+
+@utility chrome-bar {
+  /* Opaque chrome surface: header, footer, status bar, command region. No blur. */
+  background-color: var(--color-card);
+}
+
+@utility seam-x {
+  /* The ONE structural horizontal seam of a chrome bar (DPR-aware --hairline-w). */
+  border-bottom: var(--hairline-w) solid var(--color-border);
+}
+
+
+@utility seam-y {
+  /* The ONE structural vertical seam of the sidebar / split pane (DPR-aware --hairline-w). */
+  border-right: var(--hairline-w) solid var(--color-border);
+}
+
+/* ============================================================
+ * GEOMETRY — plain custom properties on the 4px unit --token-spacing-xs.
+ * ============================================================ */
+@layer base {
+  :root {
+    /* Chrome scale: top bar 48 · pane / toolbar bar 40 · strip 36. */
+    --header-height: calc(var(--token-spacing-xs) * 12);
+    --bar-pane-h: calc(var(--token-spacing-xs) * 10);
+    --bar-strip-h: calc(var(--token-spacing-xs) * 9);
+    --footer-height: calc(var(--token-spacing-xs) * 20);
+    /* Page inline margin, 4vw clamped md..xxl; inset step of floating chrome, clamped sm..lg. */
+    --shell-gutter: clamp(var(--token-spacing-md), 4vw, var(--token-spacing-xxl));
+    --shell-inset: clamp(var(--token-spacing-sm), 1.25vw, var(--token-spacing-lg));
+    --status-bar-height: calc(var(--token-spacing-xs) * 10);
+    /* Fixed rows 32 (compact) / 56 (title + hint). */
+    --menu-row-h: calc(var(--token-spacing-xs) * 8);
+    --menu-row-h-lg: calc(var(--token-spacing-xs) * 14);
+    /* Control sizes: sm 28 · md 32 · lg 36 · touch 44 (the coarse-pointer floor). */
+    --control-sm: calc(var(--token-spacing-xs) * 7);
+    --control-md: calc(var(--token-spacing-xs) * 8);
+    --control-lg: calc(var(--token-spacing-xs) * 9);
+    --control-touch: calc(var(--token-spacing-xs) * 11);
+    /* Content measure of a chat stream. */
+    --measure-thread: calc(var(--token-spacing-xs) * 192);
+    /* z ladder: content 10 · sticky 20 · floating 30 · chrome 40 · overlay 50 · popover 60.
+     * Use `z-(--z-*)`, never a raw z-N. */
+    --z-content: 10;
+    --z-sticky: 20;
+    --z-float: 30;
+    --z-chrome: 40;
+    --z-overlay: 50;
+    --z-popover: 60;
+    /* Hairline: 1 px; 0.5 px on a >=1.5x screen. */
+    --hairline-w: 1px;
+    /* Type scale multiplier (fixed at 1 here). */
+    --text-scale: 1;
+    /* Rows: height, block spacing, inline padding, line height. */
+    --density-row-h: calc(var(--token-spacing-xs) * 11);
+    --density-space-y: calc(var(--token-spacing-xs) * 3);
+    --density-pad-x: calc(var(--token-spacing-xs) * 3);
+    --density-line-height: 1.55;
+    /* Near-zero (not zero) so transitionend / animationend still fire. */
+    --motion-suppressed: calc(var(--token-duration-instant) / 5000);
+  }
+
+  @media (resolution >= 1.5x) {
+    :root {
+      --hairline-w: 0.5px;
+    }
+  }
+
+  html {
+    --font-display: var(--font-urbanist), var(--token-font-display, var(--token-font-heading));
+  }
+}
+
+/* ============================================================
+ * BASE LAYER
+ * ============================================================ */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  /* Body never scrolls; the shell's scroll region owns scrolling. */
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    /* 100 % keeps the user's own browser font-size as the base. Nothing here
+       touches it. */
+    font-size: 100%;
+    line-height: var(--leading-normal);
+    -webkit-text-size-adjust: 100%;
+    color-scheme: light;
+    text-rendering: optimizeLegibility;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+
+  /* Next 16: smooth scroll scoped to the data attribute so routing can disable it. */
+  html[data-scroll-behavior='smooth'] {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    /* Body role = the base step; the line height stays a ratio so a larger
+       inherited size never inherits a fixed 20 px line. */
+    font-size: var(--text-base);
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
+    font-variant-ligatures: common-ligatures;
+  }
+
+  /* Display face for h1/h2 (D-016: Urbanist 600–700, −0.01em). No gradient text. */
+  h1,
+  h2 {
+    font-family: var(--font-display);
+    font-weight: var(--font-weight-semibold);
+    font-feature-settings:
+      'kern' 1,
+      'liga' 1;
+    letter-spacing: -0.01em;
+    line-height: var(--leading-tight);
+    text-wrap: balance;
+  }
+
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-sans);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  .tabular-nums,
+  table,
+  code,
+  pre {
+    font-variant-numeric: tabular-nums;
+  }
+
+  code,
+  kbd,
+  samp,
+  pre {
+    font-family: var(--font-mono);
+    font-size: 0.925em;
+  }
+
+  /* Focus is always visible, whatever the motion setting. */
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+}
+
+/* ============================================================
+ * PRINT — force the light system canvas.
+ * ============================================================ */
+@media print {
+  :root {
+    color-scheme: light;
+  }
+  html,
+  body {
+    height: auto;
+    overflow: visible;
+    background: Canvas;
+    color: CanvasText;
+  }
+}
+
+/* ============================================================
+ * CROSS-DOCUMENT VIEW TRANSITIONS — gated behind reduced motion.
+ * ============================================================ */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  ::view-transition-group(root) {
+    animation-duration: var(--token-duration-page);
+    animation-timing-function: var(--token-ease-standard);
+  }
+}
+
+/* ============================================================
+ * REDUCED MOTION — remove vestibular motion; keep events firing.
+ * The OS setting (prefers-reduced-motion) removes vestibular motion.
+ * ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: var(--motion-suppressed) !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: var(--motion-suppressed) !important;
+    scroll-behavior: auto !important;
+  }
+}

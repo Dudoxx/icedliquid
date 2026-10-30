@@ -1,0 +1,288 @@
+{
+  "webgpu": {
+    "files_base": "/api/models",
+    "hf_base_url": "https://huggingface.co",
+    "hf_repo": "LiquidAI/LFM3-Omni-2B-ONNX",
+    "hf_revision": "7d6bd3fd59a0622e5ce7fefc141145a8bba1435a",
+    "onnx_dir": "onnx",
+    "decoder": "decoder_q4f16",
+    "prefill_chunk_tokens": 1024,
+    "max_tokens": 2000,
+    "graphs": {
+      "audio_encoder": "audio_encoder",
+      "codec_decoder": "codec_decoder",
+      "depth_decoder": "depth_decoder"
+    },
+    "preprocess_files": [
+      "processor_config.json",
+      "preprocessor_config.json",
+      "audio_tokenizer/config.json"
+    ]
+  },
+  "sampling": {
+    "text_temperature": 0.0,
+    "audio_temperature": 0.4,
+    "audio_repetition_penalty": 1.2
+  },
+  "asr_live": {
+    "language": "en",
+    "sample_rate": 16000,
+    "frame_ms": 30,
+    "interim_interval_ms": 500,
+    "min_first_audio_ms": 400,
+    "min_new_audio_ms": 200,
+    "agreement": 2,
+    "endpoint_silence_ms": 700,
+    "max_utterance_ms": 15000,
+    "cut_search_ms": 1000,
+    "vad": {
+      "calibration_ms": 300,
+      "start_threshold_db": -45,
+      "stop_threshold_db": -50,
+      "noise_margin_db": 10,
+      "noise_alpha": 0.05,
+      "speech_start_ms": 90,
+      "pre_roll_ms": 300
+    }
+  },
+  "voice_agent": {
+    "name": "icedLiquid",
+    "asr_lane": "browser",
+    "system_prompt": "You are icedLiquid, a concise voice assistant built on Liquid AI's LFM3-Omni model. The user speaks {language}. Always reply in {language}, in one or two short spoken sentences, even when a tool result is in another language. Every question about the time, the date, the weather or anything current needs a tool call first (get_time, get_weather, web_search); answer only from the tool result and never invent a time, a date or a number. Do not read URLs aloud. Every answer is spoken by text-to-speech, so write all numbers, units, symbols and percentages as spoken {language} words, never digits or symbols such as '8.4°C', '15 km/h', '4%' or '1:30'. To switch the screen to dark or light mode call set_theme; to change the conversation language call set_locale; when the user says goodbye or asks to stop, call end_session.",
+    "tool_followup": "Tool results: {results}\nAnswer my question now in {language}, in one or two short spoken sentences, using these results, with every number, unit and percentage written out as spoken {language} words. If a result has ok:false, say in {language} what failed.",
+    "asr_system": "Perform ASR in {language}.",
+    "tts_system": "Perform TTS in {voice} using a female voice.",
+    "locales": {
+      "en": {
+        "language": "English",
+        "tts_voice": "American English",
+        "greeting": "Hello, I am icedLiquid, built on Liquid AI's LFM3-Omni and running right here in your browser. Ask me about the weather, the time, or anything on the web.",
+        "ungrounded_answer": "I could not check that with a tool, so I will not guess. Please ask me again."
+      },
+      "de": {
+        "language": "German",
+        "tts_voice": "German",
+        "greeting": "Hallo, ich bin icedLiquid, gebaut auf LFM3-Omni von Liquid AI, und ich laufe direkt hier in deinem Browser. Frag mich nach dem Wetter, der Uhrzeit oder nach allem im Web.",
+        "ungrounded_answer": "Das konnte ich mit keinem Werkzeug prüfen, deshalb rate ich nicht. Bitte frag mich noch einmal."
+      },
+      "fr": {
+        "language": "French",
+        "tts_voice": "French",
+        "greeting": "Bonjour, je suis icedLiquid, construit sur LFM3-Omni de Liquid AI, et je tourne ici même dans votre navigateur. Demandez-moi la météo, l'heure, ou n'importe quoi sur le web.",
+        "ungrounded_answer": "Je n'ai pas pu vérifier cela avec un outil, donc je ne vais pas deviner. Pouvez-vous reposer la question ?"
+      },
+      "es": {
+        "language": "Spanish",
+        "tts_voice": "Spanish",
+        "greeting": "Hola, soy icedLiquid, creado sobre LFM3-Omni de Liquid AI, y funciono aquí mismo en tu navegador. Pregúntame por el tiempo, la hora o cualquier cosa en la web.",
+        "ungrounded_answer": "No pude comprobarlo con una herramienta, así que no voy a adivinar. Pregúntamelo otra vez, por favor."
+      }
+    },
+    "locale_switch": {
+      "verbs": [
+        "speak",
+        "switch",
+        "talk",
+        "change",
+        "sprich",
+        "sprechen",
+        "sprichst",
+        "wechsle",
+        "wechseln",
+        "rede",
+        "parle",
+        "parler",
+        "parlons",
+        "passe",
+        "passons",
+        "habla",
+        "hablar",
+        "hablemos",
+        "cambia",
+        "cambiar"
+      ],
+      "names": {
+        "en": [
+          "english",
+          "englisch",
+          "anglais",
+          "inglés",
+          "ingles"
+        ],
+        "de": [
+          "german",
+          "deutsch",
+          "allemand",
+          "alemán",
+          "aleman"
+        ],
+        "fr": [
+          "french",
+          "französisch",
+          "franzoesisch",
+          "français",
+          "francais",
+          "francés",
+          "frances"
+        ],
+        "es": [
+          "spanish",
+          "spanisch",
+          "espagnol",
+          "español",
+          "espanol"
+        ]
+      }
+    },
+    "max_tool_rounds": 2,
+    "answer_max_tokens": 192,
+    "speech_max_tokens": 768,
+    "history_turns": 6,
+    "asr_max_tokens": 128,
+    "barge_in": {
+      "enabled": true,
+      "min_dbfs": -35,
+      "hold_ms": 300,
+      "echo_margin_db": -8
+    },
+    "echo_tail_ms": 600,
+    "min_utterance_ms": 600,
+    "vad": {
+      "start_threshold_db": -40,
+      "noise_margin_db": 16,
+      "speech_start_ms": 200
+    },
+    "phantom_phrases": [
+      "sous-titrage",
+      "sous titrage",
+      "sous-titres",
+      "sous titres",
+      "amara.org",
+      "untertitel",
+      "untertitelung",
+      "untertitel im auftrag",
+      "subtítulos",
+      "subtitulos",
+      "subtitles by",
+      "thanks for watching",
+      "thank you for watching",
+      "merci d'avoir regardé",
+      "vielen dank fürs zuschauen",
+      "gracias por ver",
+      "abonnez-vous",
+      "abonnez vous",
+      "st' 501",
+      "st 501"
+    ],
+    "grounding_markers": [
+      "°",
+      "%",
+      "celsius",
+      "fahrenheit",
+      "degree",
+      "degrees",
+      "grad",
+      "degrés",
+      "degres",
+      "grados",
+      "km/h",
+      "mph",
+      "uhr",
+      "heure",
+      "heures",
+      "hora",
+      "horas",
+      "o'clock",
+      "euro",
+      "euros",
+      "€",
+      "$",
+      "dollar",
+      "dollars"
+    ],
+    "grounding_nudge": "Your answer contains numbers that did not come from a tool. Call the matching tool now: weather or temperature → get_weather, time or date → get_time, anything else current → web_search. Only if no tool fits, answer in {language} without any number.",
+    "filler_window_ms": 2500,
+    "fillers": [
+      "oh",
+      "ok",
+      "okay",
+      "thank you",
+      "thanks",
+      "pfft",
+      "hmm",
+      "hm",
+      "uh",
+      "um",
+      "so",
+      "yeah",
+      "yes",
+      "ah",
+      "danke",
+      "merci",
+      "gracias"
+    ],
+    "theme_phrases": {
+      "dark": [
+        "dark mode",
+        "dark theme",
+        "night mode",
+        "darker",
+        "dunkel",
+        "dunkler modus",
+        "dunkles design",
+        "nachtmodus",
+        "mode sombre",
+        "thème sombre",
+        "mode nuit",
+        "modo oscuro",
+        "tema oscuro"
+      ],
+      "light": [
+        "light mode",
+        "light theme",
+        "day mode",
+        "brighter",
+        "hell",
+        "heller modus",
+        "helles design",
+        "mode clair",
+        "thème clair",
+        "mode jour",
+        "modo claro",
+        "tema claro"
+      ]
+    },
+    "goodbye_phrases": [
+      "goodbye",
+      "good bye",
+      "bye bye",
+      "bye",
+      "end session",
+      "end the session",
+      "stop listening",
+      "that's all",
+      "tschüss",
+      "auf wiedersehen",
+      "au revoir",
+      "adiós",
+      "adios",
+      "hasta luego"
+    ],
+    "tools": {
+      "image_model": "recraft/recraft-v4.1-flash",
+      "image_aspect_ratios": [
+        "1:1",
+        "4:3",
+        "3:4",
+        "16:9",
+        "9:16"
+      ],
+      "image_timeout_ms": 60000,
+      "weather_days": 2,
+      "search_results": 3,
+      "summary_max_chars": 400,
+      "timeout_ms": 10000,
+      "default_time_zone": "Europe/Berlin"
+    }
+  }
+}

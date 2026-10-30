@@ -1,0 +1,41 @@
+{
+  "streamingText": {
+    "label": "Texte diffusé"
+  },
+  "streamdown": {
+    "close": "Fermer",
+    "copied": "Copié",
+    "copyCode": "Copier le code",
+    "copyLink": "Copier le lien",
+    "copyTable": "Copier le tableau",
+    "copyTableAsCsv": "Copier le tableau en CSV",
+    "copyTableAsMarkdown": "Copier le tableau en Markdown",
+    "copyTableAsTsv": "Copier le tableau en TSV",
+    "downloadDiagram": "Télécharger le diagramme",
+    "downloadDiagramAsMmd": "Télécharger le diagramme en MMD",
+    "downloadDiagramAsPng": "Télécharger le diagramme en PNG",
+    "downloadDiagramAsSvg": "Télécharger le diagramme en SVG",
+    "downloadFile": "Télécharger le fichier",
+    "downloadImage": "Télécharger l’image",
+    "downloadTable": "Télécharger le tableau",
+    "downloadTableAsCsv": "Télécharger le tableau en CSV",
+    "downloadTableAsMarkdown": "Télécharger le tableau en Markdown",
+    "errorMermaid": "Le diagramme n’a pas pu être affiché",
+    "exitFullscreen": "Quitter le plein écran",
+    "externalLinkWarning": "Vous allez ouvrir un lien externe.",
+    "imageNotAvailable": "Image indisponible",
+    "mermaidAriaLabel": "Diagramme",
+    "mermaidFormatMmd": "MMD",
+    "mermaidFormatPng": "PNG",
+    "mermaidFormatSvg": "SVG",
+    "openExternalLink": "Ouvrir le lien externe",
+    "openLink": "Ouvrir le lien",
+    "resetView": "Réinitialiser la vue",
+    "tableFormatCsv": "CSV",
+    "tableFormatMarkdown": "Markdown",
+    "tableFormatTsv": "TSV",
+    "viewFullscreen": "Afficher en plein écran",
+    "zoomIn": "Zoom avant",
+    "zoomOut": "Zoom arrière"
+  }
+}
