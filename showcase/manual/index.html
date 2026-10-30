@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en" data-format="16x9" data-brand="dudoxx" data-site-base="icedliquid">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="data:,">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>icedLiquid: a voice assistant in one browser tab</title>
+  <!-- Generated manual. Portable site: relative paths only, no CDN, no type="module". Opens from file:// and from serve.mjs. -->
+  <link rel="stylesheet" href="tokens.css?v=mvufvqol">
+  <link rel="stylesheet" href="styles.css?v=mvufvqol">
+  <link rel="stylesheet" href="piece.css?v=mvufvqol">
+  <link rel="stylesheet" href="presets/brand-ident-3d.css?v=mvufvqol">
+  <link rel="stylesheet" href="presets/manual-kit.css?v=mvufvqol">
+  <link rel="stylesheet" href="presets/ui-tour.css?v=mvufvqol">
+  <link rel="stylesheet" href="presets/table.css?v=mvufvqol">
+  <link rel="stylesheet" href="presets/step-rail.css?v=mvufvqol">
+  <link rel="stylesheet" href="presets/skin-depth.css?v=mvufvqol">
+</head>
+<body>
+  <!-- Viewer: main.viewport IS the .viewer — data-mode inline | full | dock.
+       dock = a CSS transform of this element only (controls.js); the stage box never changes size. -->
+  <main class="viewport viewer" id="viewer" data-mode="inline">
+    <div class="stage" id="stage" role="img" aria-label="icedLiquid: a voice assistant in one browser tab">
+      <div id="scenes"></div>
+      <div class="wipe" id="wipe" aria-hidden="true"></div>
+      <p class="spine" id="spine" aria-hidden="true"></p>
+      <p class="caption" id="caption" aria-live="polite"></p>
+    </div>
+
+    <nav class="controls" aria-label="Playback">
+      <!-- Player bar. Icon-only buttons: controls.js paints the icon
+           from window.MOTION_ICONS (icons.js) and keeps aria-label, data-tip and aria-pressed in step. -->
+      <div class="ctl-transport">
+        <button type="button" class="ctl-btn" id="btn-play" aria-label="Play" data-tip="Play (Space)"></button>
+        <button type="button" class="ctl-btn" id="btn-replay" aria-label="Replay" data-tip="Replay (R)"></button>
+        <button type="button" class="ctl-btn" id="btn-skip" aria-label="Skip intro" data-tip="Skip intro (S)" hidden></button>
+      </div>
+      <output class="ctl-time" id="time" for="scrub">0:00</output>
+      <div class="ctl-scrub">
+        <div class="scrubwrap">
+          <input type="range" id="scrub" min="0" max="1000" value="0" step="1" aria-label="Scrub timeline">
+          <div class="ticks" id="ticks" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="ctl-toggles">
+        <button type="button" class="ctl-btn" id="btn-sound" aria-pressed="true" aria-label="Sound on" data-tip="Sound on"></button>
+        <button type="button" class="ctl-btn" id="btn-music" aria-pressed="true" aria-label="Music on" data-tip="Music on (M)"></button>
+        <button type="button" class="ctl-btn" id="btn-cap" aria-pressed="true" aria-label="Captions on" data-tip="Captions on (C)"></button>
+        <button type="button" class="ctl-btn" id="btn-lang" aria-haspopup="true" aria-expanded="false" aria-controls="lang-pop" aria-label="Language" data-tip="Language"></button>
+        <button type="button" class="ctl-btn" id="btn-menu" aria-haspopup="dialog" aria-expanded="false" aria-controls="menu" aria-label="Menu" data-tip="Menu (T)"></button>
+        <button type="button" class="ctl-btn" id="btn-help" aria-haspopup="dialog" aria-expanded="false" aria-controls="help" aria-label="Help" data-tip="Help (?)"></button>
+        <button type="button" class="ctl-btn" id="btn-dock" aria-pressed="false" aria-label="Mini player" data-tip="Mini player (D)"></button>
+        <button type="button" class="ctl-btn" id="btn-full" aria-pressed="false" aria-label="Full screen" data-tip="Full screen (F)"></button>
+      </div>
+    </nav>
+    <div class="lang-pop" id="lang-pop" role="group" aria-label="Language" hidden></div>
+  </main>
+
+  <script src="vendor/gsap/gsap.min.js?v=mvufvqol"></script>
+  <script src="vendor/gsap/CustomEase.min.js?v=mvufvqol"></script>
+  <script src="vendor/gsap/SplitText.min.js?v=mvufvqol"></script>
+  <script src="brand/brand.js?v=mvufvqol"></script>
+  <script src="icons.js?v=mvufvqol"></script>
+  <script src="piece.js?v=mvufvqol"></script>
+  <script src="lang.js?v=mvufvqol"></script>
+  <script src="audio/bed.js?v=mvufvqol"></script>
+  <script src="audio/voice/lines.en.js?v=mvufvqol"></script>
+  <script src="audio.js?v=mvufvqol"></script>
+  <script src="studio-presets.js?v=mvufvqol"></script>
+  <script src="studio.js?v=mvufvqol"></script>
+  <script src="fx.js?v=mvufvqol"></script>
+  <script src="presets/split-lines.js?v=mvufvqol"></script>
+  <script src="presets/headline.js?v=mvufvqol"></script>
+  <script src="presets/brand-ident-3d.js?v=mvufvqol"></script>
+  <script src="presets/card-grid.js?v=mvufvqol"></script>
+  <script src="presets/kpi-trio.js?v=mvufvqol"></script>
+  <script src="presets/agenda.js?v=mvufvqol"></script>
+  <script src="presets/manual-kit.js?v=mvufvqol"></script>
+  <script src="presets/ui-tour.js?v=mvufvqol"></script>
+  <script src="presets/hub.js?v=mvufvqol"></script>
+  <script src="presets/counter.js?v=mvufvqol"></script>
+  <script src="presets/split-compare.js?v=mvufvqol"></script>
+  <script src="presets/diagram.js?v=mvufvqol"></script>
+  <script src="presets/table.js?v=mvufvqol"></script>
+  <script src="presets/image.js?v=mvufvqol"></script>
+  <script src="presets/code.js?v=mvufvqol"></script>
+  <script src="presets/step-rail.js?v=mvufvqol"></script>
+  <script src="presets/quote.js?v=mvufvqol"></script>
+  <script src="presets/endcard.js?v=mvufvqol"></script>
+  <script src="presets/skin-depth.js?v=mvufvqol"></script>
+  <script src="runtime.js?v=mvufvqol"></script>
+  <script src="controls.js?v=mvufvqol"></script>
+  <script src="nav.js?v=mvufvqol"></script>
+  <script src="lang-switch.js?v=mvufvqol"></script>
+  <script src="player-focus.js?v=mvufvqol"></script>
+</body>
+</html>

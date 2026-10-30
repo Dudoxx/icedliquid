@@ -7,8 +7,9 @@
  * @status    foundation
  *
  * Nothing here reaches the browser: there is no public key, and `server-only` makes a client
- * import a build error. An empty value counts as unset. A missing tool key turns that tool into a
- * visible `tool_unavailable` result; a malformed value (bad URL) throws at boot, naming the key.
+ * import a build error. An empty value counts as unset. A missing tool key turns that tool into
+ * its keyless demo mode (a result with `mode: "demo"` that names the key; docs/TOOLS.md); a
+ * malformed value (bad URL) throws at boot, naming the key.
  * Template: `.env.example`.
  */
 import 'server-only';

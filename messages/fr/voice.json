@@ -143,6 +143,15 @@
       "open": "Ouvrir l’image en grand",
       "title": "Image générée",
       "close": "Fermer"
+    },
+    "demo": {
+      "badge": "Démo",
+      "hint": "Mode démo : {key} n’est pas défini. Ajoutez-le dans .env.local pour utiliser le vrai service.",
+      "line": {
+        "knowledge": "Résultats tirés des fichiers de connaissances fournis, pas du web.",
+        "openMeteo": "Données en direct du service gratuit Open-Meteo.",
+        "bundledImage": "Une image d’exemple fournie, non créée à partir de votre demande."
+      }
     }
   }
 }

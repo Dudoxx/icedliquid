@@ -6,18 +6,26 @@
  * @topic     voice-agent
  * @purpose   Server-side tools of the voice agent: get_weather (WeatherAPI.com), get_time (Intl + WeatherAPI zone lookup), web_search (Exa) and generate_image (OpenRouter images API), keys kept on the server.
  * @status    active
+ *
+ * Keyless demo mode: a tool whose key is NOT set answers from a free or bundled source and says
+ * so (`mode: "demo"`, `demo_key`, `source`, `note`): get_weather → Open-Meteo, get_time for a
+ * place → the Open-Meteo geocoder's zone, web_search → bundled knowledge/*.md, generate_image →
+ * a bundled sample PNG. A key that IS set and fails upstream stays `{ok:false}`; never a demo.
  */
 import 'server-only';
 
 import { voiceAgentTools, type AppVoiceAgentToolsConfig } from '@/config';
 import { env } from '@/env';
 
+import { demoImage } from './demo-image.server';
+import { searchKnowledge } from './knowledge-search.server';
+import { openMeteoWeather } from './open-meteo-weather.server';
+import { demoFields, httpJson, numv, rec, str, type AgentToolResult, type Json } from './tool-http.server';
+
+export type { AgentToolResult } from './tool-http.server';
+
 export const AGENT_TOOL_NAMES = ['get_weather', 'get_time', 'web_search', 'generate_image'] as const;
 export type AgentToolName = (typeof AGENT_TOOL_NAMES)[number];
-
-export type AgentToolResult =
-  | { ok: true; [key: string]: unknown }
-  | { ok: false; error: string };
 
 const WEATHER_DEFAULT_BASE = 'https://api.weatherapi.com/v1';
 /** Keyless geocoder that knows local place names per language (München, Tokio, Londres, Pekín). */
@@ -25,25 +33,12 @@ const GEOCODER_BASE = 'https://geocoding-api.open-meteo.com/v1';
 const EXA_DEFAULT_BASE = 'https://api.exa.ai';
 const OPENROUTER_DEFAULT_BASE = 'https://openrouter.ai/api/v1';
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
-/** Largest upstream body read (an 8 MB image is ~10.7 MB as base64 JSON). */
-const MAX_UPSTREAM_BYTES = 12 * 1024 * 1024;
 /** Longest string argument per field; a longer one is refused, never cut. */
 const MAX_ARG_CHARS = { query: 500, prompt: 2000, location: 200, caption: 300 } as const;
 /** Shipped session locales; a place unknown in the session language is looked up in the others. */
 const GEOCODER_LANGS = ['en', 'de', 'fr', 'es'] as const;
 
-type Json = Record<string, unknown>;
 type ToolsConfig = AppVoiceAgentToolsConfig;
-
-function rec(value: unknown): Json | null {
-  return typeof value === 'object' && value !== null && !Array.isArray(value)
-    ? (value as Json)
-    : null;
-}
-
-function str(value: unknown): string | undefined {
-  return typeof value === 'string' && value !== '' ? value : undefined;
-}
 
 /** A string argument over its cap → the error the model reads; else null. */
 function tooLong(field: keyof typeof MAX_ARG_CHARS, value: string | undefined): AgentToolResult | null {
@@ -51,48 +46,6 @@ function tooLong(field: keyof typeof MAX_ARG_CHARS, value: string | undefined): 
   return value !== undefined && value.length > max
     ? { ok: false, error: `${field} is longer than ${max} characters` }
     : null;
-}
-
-function numv(value: unknown): number | undefined {
-  return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
-}
-
-/** fetch → JSON with a timeout; never throws; secrets scrubbed from the error text. */
-async function httpJson(
-  url: string,
-  init: RequestInit,
-  timeoutMs: number,
-  service: string,
-  secret: string,
-): Promise<{ ok: true; body: unknown } | { ok: false; error: string }> {
-  try {
-    const res = await fetch(url, {
-      ...init,
-      signal: AbortSignal.timeout(timeoutMs),
-      cache: 'no-store',
-    });
-    const length = Number(res.headers.get('content-length') ?? '0');
-    if (Number.isFinite(length) && length > MAX_UPSTREAM_BYTES) {
-      await res.body?.cancel();
-      return { ok: false, error: `${service} answered a body larger than ${MAX_UPSTREAM_BYTES} bytes` };
-    }
-    const text = await res.text();
-    if (!res.ok) {
-      // Scrub before cutting, so a key split at the cut cannot leave its prefix behind.
-      const snippet = (secret ? text.replaceAll(secret, '***') : text).slice(0, 200);
-      return { ok: false, error: `${service} answered ${res.status}: ${snippet}` };
-    }
-    return { ok: true, body: JSON.parse(text) as unknown };
-  } catch (cause) {
-    const name = cause instanceof Error ? cause.name : 'error';
-    return {
-      ok: false,
-      error:
-        name === 'TimeoutError'
-          ? `${service} timed out after ${timeoutMs} ms`
-          : `${service} failed (${name})`,
-    };
-  }
 }
 
 function weatherKey(): { key: string; base: string } | null {
@@ -124,11 +77,23 @@ function isPopulated(hit: Json | undefined): hit is Json {
  * WeatherAPI (in the session language), not from the foreign-language hit. No hit or a geocoder
  * failure keeps the user's text, which WeatherAPI then resolves itself (`resolved_by` says which).
  */
+/** `lat`/`lon`/`zone`/`hit_name` are set only for a geocoder hit (the keyless tools need them). */
+interface ResolvedPlace {
+  q: string;
+  name: string | null;
+  resolved_by: 'geocoder' | 'weatherapi';
+  lat?: number;
+  lon?: number;
+  zone?: string;
+  /** Display name of the hit itself, also when it came from another language. */
+  hit_name?: string;
+}
+
 async function resolvePlace(
   location: string,
   lang: string,
   cfg: ToolsConfig,
-): Promise<{ q: string; name: string | null; resolved_by: 'geocoder' | 'weatherapi' }> {
+): Promise<ResolvedPlace> {
   const local = await geocode(location, lang, cfg);
   let best = local[0];
   let name: string | null = best ? [str(best['name']), str(best['country'])].filter(Boolean).join(', ') : null;
@@ -146,10 +111,17 @@ async function resolvePlace(
     }
   }
   if (!best) return { q: location, name: null, resolved_by: 'weatherapi' };
+  const lat = numv(best['latitude']) ?? 0;
+  const lon = numv(best['longitude']) ?? 0;
+  const zone = str(best['timezone']);
   return {
-    q: `${numv(best['latitude'])},${numv(best['longitude'])}`,
+    q: `${lat},${lon}`,
     name,
     resolved_by: 'geocoder',
+    lat,
+    lon,
+    ...(zone ? { zone } : {}),
+    hit_name: [str(best['name']), str(best['country'])].filter(Boolean).join(', '),
   };
 }
 
@@ -159,9 +131,12 @@ async function getWeather(args: Json, cfg: ToolsConfig, lang: string): Promise<A
   const longLocation = tooLong('location', location);
   if (longLocation) return longLocation;
   const w = weatherKey();
-  if (!w) return { ok: false, error: 'tool_unavailable: WEATHER_API_KEY is not set' };
   const days = Math.min(3, Math.max(1, numv(args['days']) ?? cfg.weather_days));
   const where = await resolvePlace(location, lang, cfg);
+  if (!w) {
+    if (where.lat === undefined || where.lon === undefined) return { ok: false, error: `no place found for "${location}"` };
+    return openMeteoWeather({ lat: where.lat, lon: where.lon, place: where.name ?? where.hit_name ?? location }, days, lang, cfg.timeout_ms);
+  }
   const q = new URLSearchParams({
     key: w.key,
     q: where.q,
@@ -251,12 +226,14 @@ async function getTime(args: Json, cfg: ToolsConfig, lang: string): Promise<Agen
   const longLocation = tooLong('location', location);
   if (longLocation) return longLocation;
   const w = weatherKey();
-  if (!w)
-    return {
-      ok: false,
-      error: 'tool_unavailable: WEATHER_API_KEY is not set (needed to find the zone of a place)',
-    };
   const where = await resolvePlace(location, lang, cfg);
+  if (!w) {
+    if (!where.zone || !isZone(where.zone)) return { ok: false, error: `no time zone found for "${location}"` };
+    const now = zonedNow(where.zone, lang, where.name ?? where.hit_name ?? location);
+    return now.ok
+      ? { ...now, ...demoFields('WEATHER_API_KEY', 'open-meteo', 'the place and its time zone come from the free Open-Meteo geocoder instead of WeatherAPI; the time itself is exact') }
+      : now;
+  }
   const q = new URLSearchParams({ key: w.key, q: where.q });
   const r = await httpJson(
     `${w.base}/timezone.json?${q.toString()}`,
@@ -272,12 +249,12 @@ async function getTime(args: Json, cfg: ToolsConfig, lang: string): Promise<Agen
   return zonedNow(tz, lang, where.name ?? [str(loc?.['name']), str(loc?.['country'])].filter(Boolean).join(', '));
 }
 
-async function webSearch(args: Json, cfg: ToolsConfig): Promise<AgentToolResult> {
+async function webSearch(args: Json, cfg: ToolsConfig, lang: string): Promise<AgentToolResult> {
   const query = str(args['query']);
   if (!query) return { ok: false, error: 'query is required' };
   const longQuery = tooLong('query', query);
   if (longQuery) return longQuery;
-  if (!env.EXA_API_KEY) return { ok: false, error: 'tool_unavailable: EXA_API_KEY is not set' };
+  if (!env.EXA_API_KEY) return searchKnowledge(query, lang, cfg.search_results, cfg.summary_max_chars);
   const key = env.EXA_API_KEY;
   const r = await httpJson(
     `${env.EXA_BASE_URL ?? EXA_DEFAULT_BASE}/search`,
@@ -336,9 +313,9 @@ async function generateImage(args: Json, cfg: ToolsConfig): Promise<AgentToolRes
   if (!prompt) return { ok: false, error: 'prompt is required' };
   const longText = tooLong('prompt', prompt) ?? tooLong('caption', str(args['caption']));
   if (longText) return longText;
-  if (!env.OPENROUTER_API_KEY) return { ok: false, error: 'tool_unavailable: OPENROUTER_API_KEY is not set' };
   const asked = str(args['aspect_ratio']);
   const aspect = asked && cfg.image_aspect_ratios.includes(asked) ? asked : (cfg.image_aspect_ratios[0] ?? '1:1');
+  if (!env.OPENROUTER_API_KEY) return demoImage(prompt, str(args['caption']) ?? null, aspect);
   const key = env.OPENROUTER_API_KEY;
   const r = await httpJson(
     `${env.OPENROUTER_BASE_URL ?? OPENROUTER_DEFAULT_BASE}/images`,
@@ -383,7 +360,7 @@ export async function runAgentTool(
   if (name === 'get_weather') return getWeather(args, cfg, lang);
   if (name === 'get_time') return getTime(args, cfg, lang);
   if (name === 'generate_image') return generateImage(args, cfg);
-  return webSearch(args, cfg);
+  return webSearch(args, cfg, lang);
 }
 
 export function isAgentToolName(value: string): value is AgentToolName {

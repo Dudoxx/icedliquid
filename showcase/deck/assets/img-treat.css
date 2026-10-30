@@ -1,0 +1,113 @@
+/* ============================================================
+   kit/img-treat.css — image treatments for kit patterns (task 019, AC16)
+   Every text-over-image slide carries ONE scrim (scrim--light / --dark /
+   --duo) on its .kit-media figure; duotone / grain / vignette /
+   mask-reveal are optional extras. Gate 080-image-contrast fails text over
+   an image with no treatment and MEASURES contrast (>= 4.5:1) from pixels.
+   Colours are brand-token var() only — no colour literal (task 012 rule).
+   Scrim side follows data-copy-side / data-safe-edge (the pattern's
+   declared safe area), never a fixed "left 60% calm" assumption.
+   Install: keep the assets/ folder next to this file (grain.png).
+   ============================================================ */
+
+.kit-media {
+  /* The ONE image grade (slide-design-rules.md Rule 2 and _styles.css .hero-bg agree). */
+  --kit-img-grade: saturate(0.92) brightness(0.96);
+  --focal-x: 50%;
+  --focal-y: 50%;
+  --kit-reveal: 1;
+  position: absolute; inset: 0; margin: 0; overflow: hidden; z-index: var(--z-decor, 0);
+}
+.kit-media--panel { inset: var(--kp-top, 140px) var(--kp-pad-x, 96px) var(--kp-bottom, 140px) auto; width: 36%; border-radius: 24px; }
+.kit-media__img {
+  display: block; width: 100%; height: 100%; object-fit: cover;
+  object-position: var(--focal-x) var(--focal-y);
+  filter: var(--kit-img-grade);
+}
+
+/* ---------- Focal point (0..100, step 10) ---------- */
+.kit-media[data-focal-x="0"] { --focal-x: 0%; }   .kit-media[data-focal-y="0"] { --focal-y: 0%; }
+.kit-media[data-focal-x="10"] { --focal-x: 10%; } .kit-media[data-focal-y="10"] { --focal-y: 10%; }
+.kit-media[data-focal-x="20"] { --focal-x: 20%; } .kit-media[data-focal-y="20"] { --focal-y: 20%; }
+.kit-media[data-focal-x="30"] { --focal-x: 30%; } .kit-media[data-focal-y="30"] { --focal-y: 30%; }
+.kit-media[data-focal-x="40"] { --focal-x: 40%; } .kit-media[data-focal-y="40"] { --focal-y: 40%; }
+.kit-media[data-focal-x="60"] { --focal-x: 60%; } .kit-media[data-focal-y="60"] { --focal-y: 60%; }
+.kit-media[data-focal-x="70"] { --focal-x: 70%; } .kit-media[data-focal-y="70"] { --focal-y: 70%; }
+.kit-media[data-focal-x="80"] { --focal-x: 80%; } .kit-media[data-focal-y="80"] { --focal-y: 80%; }
+.kit-media[data-focal-x="90"] { --focal-x: 90%; } .kit-media[data-focal-y="90"] { --focal-y: 90%; }
+.kit-media[data-focal-x="100"] { --focal-x: 100%; } .kit-media[data-focal-y="100"] { --focal-y: 100%; }
+
+/* ---------- Scrims ----------
+   --scrim-c = scrim colour; --scrim-dir = gradient direction (from the copy
+   side outward). The two edge bands keep header / footer chrome legible. */
+.kit-media[class*="scrim--"]::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  --scrim-dir: to right;
+  background:
+    linear-gradient(to bottom, color-mix(in oklch, var(--scrim-c) 86%, transparent) 0 112px, transparent 176px),
+    linear-gradient(to top, color-mix(in oklch, var(--scrim-c) 86%, transparent) 0 120px, transparent 184px),
+    linear-gradient(var(--scrim-dir),
+      var(--scrim-c) 0%,
+      color-mix(in oklch, var(--scrim-c) 94%, transparent) 30%,
+      color-mix(in oklch, var(--scrim-c) 72%, transparent) 48%,
+      color-mix(in oklch, var(--scrim-c) 18%, transparent) 72%,
+      transparent 100%);
+}
+.kit-media[data-copy-side="right"]::after, .kit-media[data-safe-edge="right"]::after { --scrim-dir: to left; }
+.kit-media[data-safe-edge="bottom"]::after { --scrim-dir: to top; }
+.kit-media[data-safe-edge="top"]::after { --scrim-dir: to bottom; }
+.kit-media[data-copy-side="center"][data-safe-edge="center"]::after {
+  background: radial-gradient(ellipse 62% 70% at 50% 50%,
+    color-mix(in oklch, var(--scrim-c) 90%, transparent) 0%,
+    color-mix(in oklch, var(--scrim-c) 70%, transparent) 55%,
+    color-mix(in oklch, var(--scrim-c) 30%, transparent) 100%);
+}
+
+.scrim--light { --scrim-c: var(--brand-color-bg); }
+.scrim--dark  { --scrim-c: var(--brand-color-dark-bg); }
+.scrim--duo   { --scrim-c: var(--brand-color-dark-bg); --scrim-c2: var(--brand-color-primary); }
+/* Duo: dark under the copy, brand primary tint across the image. */
+.kit-media.scrim--duo::after {
+  background:
+    linear-gradient(to bottom, color-mix(in oklch, var(--scrim-c) 86%, transparent) 0 112px, transparent 176px),
+    linear-gradient(to top, color-mix(in oklch, var(--scrim-c) 86%, transparent) 0 120px, transparent 184px),
+    linear-gradient(var(--scrim-dir),
+      var(--scrim-c) 0%,
+      color-mix(in oklch, var(--scrim-c) 92%, transparent) 34%,
+      color-mix(in oklch, var(--scrim-c2) 55%, transparent) 62%,
+      color-mix(in oklch, var(--scrim-c2) 35%, transparent) 100%);
+}
+
+/* Copy ink follows the scrim, whatever the slide ground. */
+.scrim--light ~ .kit-copy { --kp-ink: var(--brand-color-fg); --kp-muted: var(--brand-color-fg-secondary, var(--brand-color-fg)); --kp-accent: var(--brand-color-primary); }
+.scrim--dark ~ .kit-copy, .scrim--duo ~ .kit-copy {
+  --kp-ink: var(--brand-color-dark-fg, var(--brand-color-paper));
+  --kp-muted: var(--brand-color-dark-fg, var(--brand-color-paper));
+  --kp-accent: var(--brand-color-dark-primary, var(--brand-color-primary));
+}
+
+/* ---------- Duotone (filter #kit-duotone emitted once per slide by patterns/index.mjs) ---------- */
+.duotone .kit-media__img { filter: url(#kit-duotone) var(--kit-img-grade); }
+.kit-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+#kit-duotone .kit-duo-shadow { flood-color: var(--brand-color-dark-bg); }
+#kit-duotone .kit-duo-light { flood-color: var(--brand-color-primary); }
+
+/* ---------- Grain (local PNG, no network) ---------- */
+.grain::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 2;
+  background-image: url("assets/grain.png"); background-size: 128px 128px;
+  mix-blend-mode: overlay; opacity: .35;
+}
+
+/* ---------- Vignette ---------- */
+.vignette .kit-media__img {
+  -webkit-mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 60%, transparent 100%);
+  mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 60%, transparent 100%);
+}
+.vignette { background: var(--brand-color-dark-bg); }
+
+/* ---------- Mask reveal (cue a css-tween on --kit-reveal 0 -> 1; static = revealed) ---------- */
+.mask-reveal .kit-media__img {
+  -webkit-mask-image: linear-gradient(to right, black calc(var(--kit-reveal) * 100%), transparent calc(var(--kit-reveal) * 100% + 8%));
+  mask-image: linear-gradient(to right, black calc(var(--kit-reveal) * 100%), transparent calc(var(--kit-reveal) * 100% + 8%));
+}

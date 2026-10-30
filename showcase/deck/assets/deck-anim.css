@@ -1,0 +1,205 @@
+/**
+ * @ddx       util
+ * @domain    holding
+ * @topic     engine
+ * @purpose   Stylesheet contract for deck-anim.js — the static half of each cue primitive (sweep band, marquee track, zoom layer, sprite chrome, chart hosts).
+ * @status    reusable
+ */
+/* ============================================================
+   deck-anim.css — the STATIC half of the cue primitives.
+   ------------------------------------------------------------
+   Division of labour: deck-anim.js writes ONE custom property per
+   frame (--sweep, --fill, a transform); everything that does not vary
+   per frame lives here. That keeps per-frame work on the compositor
+   and off the layout path, and it keeps the runtime free of style
+   strings that would have to be kept in sync with the theme.
+
+   COLOUR RULE: this sheet defines no colour values. It consumes the
+   brand aliases the slide theme sets (--teal / --teal-2 / --clay /
+   --ink / --paper). On the ANAYA INVEST palette --teal resolves to
+   the READABLE brass #856B42 (4.61:1 on ivory); pure brass #B08D57
+   measures 2.84:1 and is used only as a FILL, never as text.
+   ============================================================ */
+
+/* ---------- highlight-sweep ----------
+   A translucent band swept left-to-right behind the text. The runtime
+   drives --sweep 0%→100%; the band is a pseudo-element so it never
+   participates in layout and never reflows the number it highlights. */
+.anim-sweep {
+  position: relative;
+  isolation: isolate;
+}
+.anim-sweep::after {
+  content: "";
+  position: absolute;
+  left: -.14em; right: -.14em; top: .04em; bottom: .04em;
+  z-index: -1;
+  border-radius: .18em;
+  background: color-mix(in oklab, var(--teal-2) 34%, transparent);
+  clip-path: inset(0 calc(100% - var(--sweep, 0%)) 0 0);
+}
+
+/* ---------- arc-fill ----------
+   Any element with a --fill custom property can be a bar. The runtime
+   ramps --fill; the width follows. Used for the rate bars. */
+.bar-track {
+  position: relative;
+  height: 18px;
+  border-radius: var(--r-pill, 999px);
+  background: color-mix(in oklab, var(--ink) 10%, transparent);
+  overflow: hidden;
+}
+.bar-fill {
+  position: absolute; inset: 0 auto 0 0;
+  width: var(--fill, 0%);
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--teal) 0%, var(--teal-2) 100%);
+}
+.bar-fill.is-cost {
+  background: linear-gradient(90deg, var(--clay) 0%, color-mix(in oklab, var(--clay) 55%, var(--gold)) 100%);
+}
+
+/* ---------- marquee ----------
+   The runtime duplicates the track content once and translates by half
+   its width, so the loop is seamless. Masked at both ends so items
+   dissolve rather than being chopped by the container edge. */
+.anim-marquee {
+  overflow: hidden;
+  width: 100%;
+  /* The stops below are ALPHA, not colour: a mask reads only the alpha
+     channel, so `black` here means "fully opaque", never a paint value. */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, black 6%, black 94%, transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0, black 6%, black 94%, transparent 100%);
+}
+.anim-marquee .mq-track {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: max-content;
+  will-change: transform;
+}
+.mq-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 0 34px;
+  font-family: var(--brand-typography-font-mono, monospace);
+  white-space: nowrap;
+}
+.mq-item .mq-k {
+  font-size: 17px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+}
+.mq-item .mq-v {
+  font-size: 25px;
+  font-weight: 800;
+  color: var(--teal);          /* readable brass, not the pure fill brass */
+}
+.mq-item .mq-sep {
+  color: color-mix(in oklab, var(--ink) 26%, transparent);
+  padding-left: 34px;
+}
+
+/* ---------- viewport-zoom ----------
+   The zoom layer is what scales. Chrome (.brand-bar, .footer-rule) is
+   deliberately OUTSIDE it, so a push-in can never crop or magnify the
+   frame furniture — the camera rule of layer-contract.md, applied to
+   the browsable target. */
+.zoom-layer {
+  transform-origin: 50% 50%;
+  will-change: transform;
+  /* The layer is promoted so the push composites on the GPU; without this a
+     scaled text layer re-rasterises every frame and the push stutters. */
+  backface-visibility: hidden;
+}
+
+/* The PANE — what makes a push read as a camera rather than a CSS zoom.
+   Without a clip, scaled content slides out over the slide edges and the
+   brand bar. The pane is the slide's own box, so the camera can never show
+   anything outside the frame it is filming. */
+.zoom-pane { overflow: hidden; }
+
+/* A layer that moves at its own rate during a push. data-depth 0 is locked to
+   the frame (captions, labels, chrome-like text); 1 rides the full camera.
+   Anything between gives the scene depth. */
+.zoom-layer [data-depth] { will-change: transform; }
+
+/* ---------- genie ----------
+   The runtime writes the transform and the clip-path; this only
+   supplies the origin the morph is anchored to and the paint hint. */
+.genie-panel {
+  transform-origin: 50% 100%;
+  will-change: transform, clip-path, opacity;
+}
+
+/* ---------- chart hosts ----------
+   ECharts sizes to its container, so the container must have a real
+   height before init or the chart renders 0px tall. */
+.chart-host {
+  width: 100%;
+  min-height: 260px;
+}
+.chart-host.tall  { min-height: 380px; }
+.chart-host.short { min-height: 200px; }
+/* ECharts SVG output must not overflow its card */
+.chart-host svg { max-width: 100%; }
+
+/* ---------- sprites ----------
+   In-house SVG sprites (coins, buildings, arrows). They inherit colour
+   through currentColor, because var(--x) does NOT resolve inside an
+   SVG `fill=` presentation attribute — the trap verified on this deck.
+   Set the colour on a CLASS, fill with currentColor. */
+.sprite         { color: var(--teal);   fill: currentColor; }
+.sprite.is-deep { color: var(--clay); }
+.sprite.is-gold { color: var(--teal-2); }
+.sprite.is-mute { color: color-mix(in oklab, var(--ink) 34%, transparent); }
+.sprite-stroke  { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+
+/* A token that rides a path (travel primitive). Its transform is owned
+   by the runtime — never set one here, it would become the cached base
+   and offset every position by that amount. */
+.coin { color: var(--teal-2); }
+.coin circle { fill: currentColor; }
+.coin text {
+  fill: var(--paper);
+  font-family: var(--brand-typography-font-body, sans-serif);
+  font-weight: 800;
+  text-anchor: middle;
+}
+
+/* The rail a token travels along. Kept faint: it is the road, not the
+   traffic. */
+.flow-rail {
+  fill: none;
+  stroke: color-mix(in oklab, var(--ink) 18%, transparent);
+  stroke-width: 3;
+  stroke-dasharray: 2 9;
+  stroke-linecap: round;
+}
+
+/* ---------- phrase progress ----------
+   deck-anim.js sets --phrase-progress on the ACTIVE slide as narration
+   advances. This is the only surface that consumes it. */
+.slide .phrase-rail {
+  position: absolute; left: 0; top: 104px; height: 3px;
+  width: var(--phrase-progress, 0%);
+  background: var(--teal-2);
+  z-index: 40;
+  opacity: .85;
+}
+
+/* ---------- reduced motion ----------
+   deck-anim.js already lands every cue on its end state under
+   prefers-reduced-motion. This removes the residual ambient loops so
+   nothing keeps moving after that. */
+@media (prefers-reduced-motion: reduce) {
+  .anim-marquee .mq-track { transform: none !important; }
+  .parallax-bg, .parallax-mid, .parallax-fg, .parallax-breath {
+    animation: none !important;
+    translate: none !important;
+  }
+  .zoom-layer { transform: none !important; }
+}

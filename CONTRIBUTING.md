@@ -4,6 +4,9 @@
 Thank you for helping. This page says how to set up, what to check before a
 pull request, and the few rules the code follows.
 
+icedLiquid is maintained by Walid Boudabbous for Dudoxx UG and Acceleate
+Consulting (see [docs/ABOUT.md](docs/ABOUT.md)).
+
 ## Set up
 
 Follow [INSTALLATION.md](INSTALLATION.md) steps 1 to 5. You need the model
@@ -54,9 +57,12 @@ why, and how you tested it.
 
 ### Behaviour: fail loudly, never fake
 
-- A missing key, model file or config value is a visible error, never a
-  silent default. A tool without its key returns `{ ok: false, error }`; it
-  never returns a made-up result.
+- A missing model file or config value is a visible error, never a silent
+  default.
+- A tool without its key runs its demo mode, and says so: the result carries
+  `mode: "demo"` (or `source: "local-knowledge"`), the card shows a **Demo**
+  badge, and the agent tells the user. Demo data is never presented as live.
+  See [docs/TOOLS.md](docs/TOOLS.md).
 - API keys stay on the server. Never read a key in a client component.
 
 ### Files

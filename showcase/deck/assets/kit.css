@@ -1,0 +1,120 @@
+/* ============================================================
+   kit/kit.css — chrome for kit/chrome.mjs (task 012, AC14/AC15)
+   One sheet for header / footer / lower-third / chapter bumper /
+   progress rail / official logo. Colours and faces are brand-token
+   var() only (D-016 via design-contract → resolve-brand.mjs output,
+   loaded BEFORE this sheet). No raw colour literal, no filter on a
+   logo — gate 050-kit-chrome fails either. Stacking: the --z-chrome
+   band declared by the deck's _styles.css.
+   ============================================================ */
+
+[data-kit] {
+  --kit-ink: var(--brand-color-fg);
+  --kit-muted: var(--brand-color-fg-secondary, var(--brand-color-fg));
+  --kit-rule: var(--brand-color-hairline);
+  --kit-accent: var(--brand-color-primary);
+  --kit-chip: var(--brand-color-bg);
+  --kit-face-body: var(--brand-typography-font-body);
+  --kit-face-head: var(--brand-typography-font-display, var(--brand-typography-font-heading, var(--brand-typography-font-body)));
+  --kit-face-mono: var(--brand-typography-font-mono, var(--brand-typography-font-body));
+  z-index: var(--z-chrome, 9000);
+}
+[data-kit][data-ground="dark"] {
+  --kit-ink: var(--brand-color-dark-fg, var(--brand-color-paper));
+  --kit-muted: var(--brand-color-dark-muted-foreground, var(--brand-color-dark-fg, var(--brand-color-paper)));
+  --kit-rule: var(--brand-color-dark-hairline, var(--brand-color-hairline));
+  --kit-accent: var(--brand-color-dark-primary, var(--brand-color-primary));
+  --kit-chip: var(--brand-color-dark-bg, var(--brand-color-fg));
+}
+
+/* ---------- Header ---------- */
+.kit-header {
+  position: absolute; top: 0; left: 0; right: 0; height: 104px; padding: 0 96px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--kit-face-body); color: var(--kit-ink);
+}
+.kit-header__logo { display: flex; align-items: center; height: 100%; }
+.kit-header__section {
+  font-family: var(--kit-face-mono); font-size: 20px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--kit-muted);
+}
+
+/* ---------- Official logo (never recoloured) ---------- */
+.kit-logo { display: block; width: auto; height: auto; object-fit: contain; }
+.kit-logo--lockup, .kit-logo--wordmark { max-width: 300px; max-height: 52px; }
+.kit-logo--mark { max-width: 64px; max-height: 64px; }
+/* Dark ground without an official light variant: the official file on a
+   brand-token plate. Plate colour = --brand-color-<data-plate>. */
+.kit-logo-plate {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 10px 18px; border-radius: 12px;
+  background: var(--brand-color-paper);
+}
+.kit-logo-plate[data-plate="bg"] { background: var(--brand-color-bg); }
+
+/* ---------- Footer ---------- */
+.kit-footer {
+  position: absolute; bottom: 36px; left: 96px; right: 96px;
+  border-top: 1px solid var(--kit-rule); padding-top: 18px;
+  display: flex; justify-content: space-between; align-items: center; gap: 24px;
+  font-family: var(--kit-face-body); font-size: 20px; font-weight: 600;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--kit-muted);
+}
+.kit-footer__brand { color: var(--kit-ink); font-weight: 800; letter-spacing: .24em; }
+.kit-footer__url { text-transform: none; letter-spacing: .04em; }
+.kit-footer__index { font-family: var(--kit-face-mono); color: var(--kit-accent); letter-spacing: .08em; }
+
+/* ---------- Lower third ---------- */
+.kit-lower-third {
+  position: absolute; left: 96px; bottom: 120px;
+  display: flex; flex-direction: column; gap: 6px; padding: 18px 28px;
+  border-radius: 12px; background: var(--brand-color-paper);
+  font-family: var(--kit-face-body); color: var(--kit-ink);
+}
+.kit-lower-third__name { font-family: var(--kit-face-head); font-size: 34px; font-weight: 700; line-height: 1.1; }
+.kit-lower-third__role { font-size: 20px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--kit-muted); }
+
+/* ---------- Chapter bumper ---------- */
+.kit-chapter-bumper {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: center; gap: 18px; padding: 0 160px;
+  font-family: var(--kit-face-body); color: var(--kit-ink);
+}
+.kit-chapter-bumper__kicker {
+  font-family: var(--kit-face-mono); font-size: 20px; font-weight: 700;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--kit-accent);
+}
+.kit-chapter-bumper__title {
+  margin: 0; font-family: var(--kit-face-head); font-size: 96px; font-weight: 700;
+  line-height: 1.04; letter-spacing: -.02em; color: var(--kit-ink);
+}
+
+/* ---------- Progress rail (native <progress>) ---------- */
+.kit-progress-rail {
+  position: absolute; left: 96px; right: 96px; bottom: 20px; height: 4px;
+  appearance: none; -webkit-appearance: none; border: 0; border-radius: 2px;
+  background: var(--kit-rule); color: var(--kit-accent); overflow: hidden;
+}
+.kit-progress-rail::-webkit-progress-bar { background: var(--kit-rule); }
+.kit-progress-rail::-webkit-progress-value { background: var(--kit-accent); }
+.kit-progress-rail::-moz-progress-bar { background: var(--kit-accent); }
+
+/* ---------- Camera layer (chrome.mjs kitCamera, task 044) ----------
+   Slide content sits in .ddx-camera.kit-camera, the chrome outside it, so the
+   stage camera moves the content while header / footer stay fixed. Same box
+   as the slide: patterns positioned inset 0 keep their layout. */
+.kit-camera { position: absolute; inset: 0; margin: 0; }
+
+/* ---------- Locale + hero interplay ---------- */
+:lang(de) :is(.kit-header__section, .kit-footer) { letter-spacing: .12em; }
+:lang(fr) :is(.kit-header__section, .kit-footer) { letter-spacing: .10em; }
+/* Over a hero image the chrome shares the frame's band; DOM order decides.
+   Position stays absolute — relative drops the footer mid-slide. */
+body:has(.hero-bg) :is(.kit-header, .kit-footer) { z-index: var(--z-cast, 2); }
+/* Over a photo pattern the chrome text cannot rely on the copy scrim (it sits
+   outside the copy safe area), so each chrome label gets a ground chip: rendered
+   contrast >= 4.5:1 whatever the photo (080-image-contrast, task 025). */
+body:has(:is([data-kit-pattern="full-bleed-photo"], [data-kit-pattern="hero-image-copy"]))
+  :is(.kit-footer__brand, .kit-footer__url, .kit-footer__index, .kit-header__section) {
+  background: var(--kit-chip); padding: 4px 10px; border-radius: 6px;
+}

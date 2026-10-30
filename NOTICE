@@ -1,7 +1,11 @@
 icedLiquid
 © 2026 Dudoxx UG / Acceleate Consulting - Walid Boudabbous
 
-This product includes software developed by Dudoxx UG (https://www.dudoxx.com).
+Author: Walid Boudabbous, CTO of Dudoxx UG and founder of Acceleate
+Consulting (walid@acceleate.com).
+
+This product includes software developed by Dudoxx UG (https://www.dudoxx.com)
+and Acceleate Consulting (https://www.acceleate.com).
 The source code in this repository is licensed under the Apache License,
 Version 2.0. See the LICENSE file.
 
@@ -10,8 +14,10 @@ Model credit
 ------------
 
 icedLiquid is built on LFM3-Omni by Liquid AI (https://www.liquid.ai).
-Thank you to Liquid AI for releasing an open multimodal model that can listen,
-think and speak inside one browser tab.
+Thank you to Liquid AI for releasing LFM3, the latest generation of their
+open Liquid Foundation Models, and LFM3-Omni, an open multimodal model that
+can listen, think and speak inside one browser tab.
+Models: https://www.liquid.ai/models
 
 icedLiquid is an independent project by Dudoxx UG. It is not made, endorsed
 or sponsored by Liquid AI. "Liquid AI" and "LFM" are names of Liquid AI, Inc.
@@ -75,5 +81,20 @@ License 1.1.
 
 The tools of the voice agent call these services from your server at run
 time: WeatherAPI.com, Exa and OpenRouter (only when you set their key), and
-the keyless Open-Meteo geocoding API (to find a place name for the weather
-tool). Their terms of service apply to your use of them.
+the keyless Open-Meteo geocoding and forecast APIs (place names for the
+weather tool, and the weather demo mode when no weather key is set). Their
+terms of service apply to your use of them.
+
+
+Showcase
+--------
+
+showcase/manual/ is a narrated motion manual. It includes a copy of GSAP
+3.15.0 (showcase/manual/vendor/gsap/), licensed under the GreenSock Standard
+"no charge" license (https://gsap.com/standard-license), not under Apache-2.0.
+Its icons use path data from Lucide (ISC) and Feather (MIT). Details:
+showcase/manual/vendor/gsap/NOTICE.md.
+
+The manual, the deck and the article in showcase/ are © 2026 Dudoxx UG /
+Acceleate Consulting - Walid Boudabbous. The screenshots in them show this
+app.

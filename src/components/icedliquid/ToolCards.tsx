@@ -9,9 +9,10 @@
  * @status    feature-local
  *
  * Layout: tonal fill, no borders, tabular numbers, https-only links opened in a new
- * tab with noopener. A missing value shows a dash; nothing is invented.
+ * tab with noopener. A missing value shows a dash; nothing is invented. A keyless (demo) result
+ * shows a Demo badge whose tooltip names the missing env key, plus a line on where the data came from.
  */
-import { CircleCheck, CircleX, Droplets, ExternalLink, Globe, ImageIcon, Languages, Loader2, Moon, Power, Sun, Wind, Wrench, type LucideIcon } from 'lucide-react';
+import { CircleCheck, CircleX, Droplets, ExternalLink, FlaskConical, Globe, ImageIcon, Languages, Loader2, Moon, Power, Sun, Wind, Wrench, type LucideIcon } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 
 import { Icon } from '@/components/ui/Icon';
@@ -21,7 +22,7 @@ import type { VoiceAgentToolEvent } from '@/lib/voice-agent/types';
 import { CLIENT_TOOLS } from '@/lib/voice-agent/tools';
 
 import { DownloadLink, ImageViewer } from './ImageViewer';
-import { asImage, asWeather, asWebHits, weatherGlyph, type ImageResult, type WeatherResult, type WebHit } from './tool-results';
+import { asDemo, asImage, asWeather, asWebHits, weatherGlyph, type DemoInfo, type DemoSource, type ImageResult, type WeatherResult, type WebHit } from './tool-results';
 
 /** `now` keeps the tool's one decimal (the answer quotes it); day rows round to whole degrees. */
 function useFormat(): { now: (c: number | null) => string; temp: (c: number | null) => string; kph: (v: number | null) => string; pct: (v: number | null) => string; day: (d: string | null, i: number) => string } {
@@ -48,6 +49,38 @@ function useToolLabel(): (name: string) => string {
   return (name) => (isKnownTool(name) ? t(`stage.tools.${name}`) : name);
 }
 
+/** i18n key of the demo line per data source. */
+const DEMO_LINE: Readonly<Record<DemoSource, 'knowledge' | 'openMeteo' | 'bundledImage'>> = {
+  'local-knowledge': 'knowledge',
+  'open-meteo': 'openMeteo',
+  'bundled-image': 'bundledImage',
+};
+
+/** The visible Demo badge; the tooltip and the screen-reader label name the missing key. */
+function DemoBadge({ demo }: { demo: DemoInfo }): React.JSX.Element {
+  const t = useTranslations('voice');
+  const hint = t('stage.demo.hint', { key: demo.key });
+  return (
+    <span className="inline-flex shrink-0 items-center gap-xs rounded-full bg-signal-soft px-sm py-xs text-xs font-medium text-foreground" title={hint} aria-label={hint} data-demo={demo.key}>
+      <Icon icon={FlaskConical} size="sm" />
+      {t('stage.demo.badge')}
+    </span>
+  );
+}
+
+/** Demo badge + one line on the data source and the key that turns on the real service. */
+function DemoNote({ demo }: { demo: DemoInfo }): React.JSX.Element {
+  const t = useTranslations('voice');
+  return (
+    <div className="flex min-w-0 flex-wrap items-center gap-sm" data-line="demo">
+      <DemoBadge demo={demo} />
+      <Text as="span" variant="small" className="min-w-0 flex-1">
+        {t(`stage.demo.line.${DEMO_LINE[demo.source]}`)} {t('stage.demo.hint', { key: demo.key })}
+      </Text>
+    </div>
+  );
+}
+
 function CardHeader({ icon, title, meta }: { icon: LucideIcon; title: string; meta: string }): React.JSX.Element {
   return (
     <div className="flex min-w-0 items-center gap-sm">
@@ -64,7 +97,7 @@ function CardHeader({ icon, title, meta }: { icon: LucideIcon; title: string; me
   );
 }
 
-function WeatherCard({ w, ms }: { w: WeatherResult; ms: number }): React.JSX.Element {
+function WeatherCard({ w, ms, demo }: { w: WeatherResult; ms: number; demo: DemoInfo | null }): React.JSX.Element {
   const t = useTranslations('voice');
   const label = useToolLabel();
   const f = useFormat();
@@ -109,11 +142,12 @@ function WeatherCard({ w, ms }: { w: WeatherResult; ms: number }): React.JSX.Ele
           </li>
         ))}
       </ol>
+      {demo ? <DemoNote demo={demo} /> : null}
     </Surface>
   );
 }
 
-function WebCard({ hits, query, ms }: { hits: WebHit[]; query: string; ms: number }): React.JSX.Element {
+function WebCard({ hits, query, ms, demo }: { hits: WebHit[]; query: string; ms: number; demo: DemoInfo | null }): React.JSX.Element {
   const t = useTranslations('voice');
   const label = useToolLabel();
   return (
@@ -133,11 +167,12 @@ function WebCard({ hits, query, ms }: { hits: WebHit[]; query: string; ms: numbe
           </li>
         ))}
       </ul>
+      {demo ? <DemoNote demo={demo} /> : null}
     </Surface>
   );
 }
 
-function ImageCard({ img, ms }: { img: ImageResult; ms: number }): React.JSX.Element {
+function ImageCard({ img, ms, demo }: { img: ImageResult; ms: number; demo: DemoInfo | null }): React.JSX.Element {
   const t = useTranslations('voice');
   const label = useToolLabel();
   const meta = [label('generate_image'), img.model?.split('/').at(-1), img.cost_usd === null ? null : `$${img.cost_usd.toFixed(3)}`, t('stage.ms', { ms: Math.round(ms) })]
@@ -151,6 +186,7 @@ function ImageCard({ img, ms }: { img: ImageResult; ms: number }): React.JSX.Ele
         {(img.caption ?? img.prompt) ? <p className="line-clamp-3 min-w-0 flex-1 text-xs leading-relaxed text-muted-foreground" title={img.prompt}>{img.caption ?? img.prompt}</p> : <span className="flex-1" />}
         <DownloadLink url={img.url} />
       </div>
+      {demo ? <DemoNote demo={demo} /> : null}
     </Surface>
   );
 }
@@ -164,6 +200,7 @@ function ToolChip({ event }: { event: VoiceAgentToolEvent }): React.JSX.Element 
   const ok = event.result?.ok === true;
   const client = CLIENT_TOOLS.has(event.name);
   const icon = event.name === 'set_theme' && event.args['mode'] === 'light' ? Sun : (CLIENT_ICON[event.name] ?? Wrench);
+  const demo = asDemo(event.result);
   const args = Object.values(event.args).map((v) => (typeof v === 'string' ? v : JSON.stringify(v))).join(' · ');
   return (
     <div className="flex min-w-0 items-center gap-sm self-start rounded-full bg-secondary px-md py-xs text-secondary-foreground" data-line="tool">
@@ -178,18 +215,20 @@ function ToolChip({ event }: { event: VoiceAgentToolEvent }): React.JSX.Element 
       />
       {done ? <Mono className="text-sm">{t('stage.ms', { ms: Math.round(event.ms ?? 0) })}</Mono> : null}
       <span className="text-xs opacity-80">{client ? t('stage.where.page') : t('stage.where.server')}</span>
+      {demo ? <DemoBadge demo={demo} /> : null}
     </div>
   );
 }
 
 /** The card for a finished weather/search call, else the chip. */
 export function ToolCard({ event }: { event: VoiceAgentToolEvent }): React.JSX.Element {
+  const demo = asDemo(event.result);
   const image = event.name === 'generate_image' ? asImage(event.result) : null;
-  if (image) return <ImageCard img={image} ms={event.ms ?? 0} />;
+  if (image) return <ImageCard img={image} ms={event.ms ?? 0} demo={demo} />;
   const weather = event.name === 'get_weather' ? asWeather(event.result) : null;
-  if (weather) return <WeatherCard w={weather} ms={event.ms ?? 0} />;
+  if (weather) return <WeatherCard w={weather} ms={event.ms ?? 0} demo={demo} />;
   const hits = event.name === 'web_search' ? asWebHits(event.result) : null;
   const query = typeof event.args['query'] === 'string' ? event.args['query'] : '';
-  if (hits && hits.length > 0) return <WebCard hits={hits} query={query} ms={event.ms ?? 0} />;
+  if (hits && hits.length > 0) return <WebCard hits={hits} query={query} ms={event.ms ?? 0} demo={demo} />;
   return <ToolChip event={event} />;
 }

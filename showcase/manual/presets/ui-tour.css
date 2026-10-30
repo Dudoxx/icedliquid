@@ -1,0 +1,7 @@
+/* preset: ui-tour — note column beside the screen. Geometry of the frame is set in cqw by manual-kit.
+   © Dudoxx UG / Acceleate Consulting - Walid Boudabbous <walid@acceleate.com> */
+.preset-ui-tour { align-items: center; gap: 3cqw; }
+.preset-ui-tour .col-text { flex: 0 0 28cqw; }
+.preset-ui-tour.mk-flip { flex-direction: row-reverse; }
+.preset-ui-tour .mk-notes { max-height: 25cqw; overflow: hidden; }
+@container (max-width: 900px) { .preset-ui-tour .col-text { flex-basis: 30cqw; } }

@@ -1,0 +1,264 @@
+/* ============================================================
+   kit/bookends.css — the kit intro + outro (task 018, AC14/AC15)
+   kit/intro.mjs and kit/outro.mjs emit the markup; this sheet places it.
+   Load order: brand-token CSS (resolve-brand.mjs) -> kit.css ->
+   patterns.css (owns the ONE --kp-fs-* type scale) -> bookends.css.
+   The bookend root also carries .kit-pattern, so it inherits the
+   --kp-* colour, face and size variables. Colours are brand-token
+   var() only: no colour literal. No filter on a logo: the logo is
+   the official file, revealed by clip-path / DrawSVG and never recoloured.
+   Every moving value is driven by the GSAP scene on the DDXCue clock;
+   this sheet holds the composed END state (static capture, PDF, no JS).
+   ============================================================ */
+
+.kit-bookend {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; background: var(--brand-color-bg);
+}
+.kit-bookend[data-ground="dark"] { background: var(--brand-color-dark-bg); }
+
+/* Two hairline rings behind the logo open out as it lands. Flat token
+   strokes, no gradient (D-016). Decorative, never over the logo. */
+.kit-bookend__ring {
+  position: absolute; left: 50%; top: 50%; border-radius: 50%;
+  pointer-events: none; z-index: 0; border: 2px solid var(--kp-rule);
+}
+.kit-bookend__ring--a { width: 1100px; height: 1100px; margin: -550px 0 0 -550px; }
+.kit-bookend__ring--b { width: 1560px; height: 1560px; margin: -780px 0 0 -780px; opacity: .6; }
+.kit-bookend-page { margin: 0; width: 1920px; height: 1080px; overflow: hidden; position: relative; }
+.kit-bookend__stack {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center;
+}
+
+/* Logo + accent rule move as one group (centred first, then rise). */
+.kit-bookend__mark { display: flex; flex-direction: column; align-items: center; }
+
+/* ---------- Official logo, hero size ---------- */
+.kit-bookend__logo { position: relative; display: flex; justify-content: center; align-items: center; }
+.kit-bookend__logo { --kb-logo-scale: 1; }
+/* Per-brand visual weight: logo-map.json heroScale (x10) sizes the BOX, never the pixels. */
+.kit-bookend__logo[data-logo-scale="5"] { --kb-logo-scale: 0.5; }
+.kit-bookend__logo[data-logo-scale="6"] { --kb-logo-scale: 0.6; }
+.kit-bookend__logo[data-logo-scale="7"] { --kb-logo-scale: 0.7; }
+.kit-bookend__logo[data-logo-scale="8"] { --kb-logo-scale: 0.8; }
+.kit-bookend__logo[data-logo-scale="9"] { --kb-logo-scale: 0.9; }
+.kit-bookend__logo[data-logo-scale="10"] { --kb-logo-scale: 1.0; }
+.kit-bookend__logo[data-logo-scale="11"] { --kb-logo-scale: 1.1; }
+.kit-bookend__logo[data-logo-scale="12"] { --kb-logo-scale: 1.2; }
+.kit-bookend__logo[data-logo-scale="13"] { --kb-logo-scale: 1.3; }
+.kit-bookend__logo[data-logo-scale="14"] { --kb-logo-scale: 1.4; }
+.kit-bookend__logo[data-logo-scale="15"] { --kb-logo-scale: 1.5; }
+.kit-bookend__logo[data-logo-scale="16"] { --kb-logo-scale: 1.6; }
+.kit-bookend__logo[data-logo-scale="17"] { --kb-logo-scale: 1.7; }
+.kit-bookend__logo[data-logo-scale="18"] { --kb-logo-scale: 1.8; }
+.kit-bookend__logo[data-logo-scale="19"] { --kb-logo-scale: 1.9; }
+.kit-bookend__logo[data-logo-scale="20"] { --kb-logo-scale: 2.0; }
+.kit-bookend .kit-logo--lockup,
+.kit-bookend .kit-logo--wordmark { max-width: calc(760px * var(--kb-logo-scale)); max-height: calc(200px * var(--kb-logo-scale)); }
+.kit-bookend .kit-logo--mark { max-width: calc(220px * var(--kb-logo-scale)); max-height: calc(220px * var(--kb-logo-scale)); }
+.kit-bookend .kit-logo-plate { padding: 36px 56px; border-radius: 28px; }
+.kit-logo-svg { display: block; width: calc(760px * var(--kb-logo-scale, 1)); }
+.kit-logo-svg > svg { display: block; width: 100%; height: auto; }
+.kit-outro .kit-logo--lockup,
+.kit-outro .kit-logo--wordmark { max-width: calc(560px * var(--kb-logo-scale)); max-height: calc(128px * var(--kb-logo-scale)); }
+.kit-outro .kit-logo-plate { padding: 24px 40px; border-radius: 22px; }
+.kit-outro .kit-logo-svg { width: calc(520px * var(--kb-logo-scale, 1)); }
+
+/* Accent rule under the logo: draws out from the centre. */
+.kit-bookend__rule {
+  width: 240px; height: 4px; margin-top: 48px; border-radius: 2px;
+  background: var(--kp-accent); transform-origin: 50% 50%;
+}
+
+/* ---------- Intro copy ---------- */
+.kit-bookend .kit-intro__hook {
+  margin: 56px 0 0; max-width: 1480px;
+  font-family: var(--kp-face-head); font-size: var(--kp-fs-headline); font-weight: 700;
+  line-height: 1.1; letter-spacing: -.02em; color: var(--kp-ink);
+}
+.kit-bookend .kit-intro__promise {
+  margin: 28px 0 0; max-width: 1240px;
+  font-family: var(--kp-face-body); font-size: var(--kp-fs-lead); font-weight: 500;
+  line-height: 1.35; color: var(--kp-muted);
+}
+.kit-bookend .kit-intro__chips {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 16px;
+  margin: 44px 0 0; padding: 0; list-style: none;
+}
+.kit-intro__chip {
+  padding: 10px 24px; border-radius: 999px; border: 2px solid var(--kp-rule);
+  font-family: var(--kp-face-mono); font-size: var(--kp-fs-label); font-weight: 600;
+  letter-spacing: .06em; color: var(--kp-ink);
+}
+/* SplitText line masks (mask:'lines' wraps every line in an overflow clip).
+   Room above and below for ascenders/descenders: with line-height 1.1 the glyph
+   box is taller than the line box, so check-text found every line clipped by
+   4 px and adjacent lines overlapping (task 025). */
+.kit-bookend .kit-split-line { padding: .08em 0 .16em; }
+
+/* ---------- Outro ---------- */
+/* A partial band (24% wide) in ground-mixed brand ink crosses the frame once —
+   never a full flat pale frame (task 025 tone-down). Solid fill, no gradient (D-016). */
+.kit-outro__sweep {
+  position: absolute; top: 0; bottom: 0; left: -24%; width: 24%; z-index: 3; pointer-events: none;
+  background: color-mix(in oklch, var(--kp-accent) 18%, var(--brand-color-bg));
+}
+.kit-bookend[data-ground="dark"] .kit-outro__sweep {
+  background: color-mix(in oklch, var(--kp-accent) 30%, var(--brand-color-dark-bg));
+}
+.kit-outro__card {
+  display: flex; align-items: center; gap: 72px; margin-top: 64px;
+  padding: 56px 72px; border-radius: 32px; text-align: left;
+  background: var(--kp-card); border: 2px solid var(--kp-rule);
+  box-shadow: 0 32px 80px -40px color-mix(in oklch, var(--brand-color-fg) 35%, transparent);
+}
+.kit-outro__copy { display: flex; flex-direction: column; gap: 22px; max-width: 900px; }
+.kit-bookend .kit-outro__cta {
+  margin: 0; font-family: var(--kp-face-head); font-size: var(--kp-fs-headline-stack);
+  font-weight: 700; line-height: 1.08; letter-spacing: -.02em; color: var(--kp-ink);
+}
+.kit-outro__url {
+  font-family: var(--kp-face-mono); font-size: var(--kp-fs-lead); font-weight: 700;
+  letter-spacing: .01em; color: var(--kp-accent);
+}
+.kit-outro__contact {
+  font-family: var(--kp-face-body); font-size: var(--kp-fs-body); font-weight: 500; color: var(--kp-muted);
+}
+.kit-outro__card .kit-bookend__rule { width: 120px; margin: 4px 0 0; transform-origin: 0 50%; }
+
+/* QR: generated from data (outro.mjs), quiet zone on its own paper tile so
+   it scans on either ground. */
+.kit-qr { display: block; width: 248px; height: 248px; flex: none; border-radius: 16px; }
+.kit-qr__bg { fill: var(--brand-color-paper); }
+.kit-qr__mod { fill: var(--brand-color-fg); }
+
+/* ============================================================
+   Hero intro (layout "hero", the default since 2026-10-14).
+   Editorial composition: brand lockup top-left, copy column left
+   (eyebrow + signal rule, display title, hook, promise, chips),
+   a token-drawn signal scene right (recessed disc, two orbits,
+   three arcs with signal dots, the official mark at the centre),
+   optional backdrop photo (panel = right 44 %, full = whole frame)
+   under a FLAT token veil. D-016: no gradient, no glow, no blur;
+   the signal colour is decorative only (rule, dots), never text.
+   ============================================================ */
+.kit-intro--hero {
+  --ki-pad-x: 128px;
+  --ki-signal: var(--brand-color-signal, var(--kp-accent));
+  --ki-ground: var(--brand-color-bg);
+  --ki-disc: var(--brand-color-bg-recessed, var(--kp-accent-soft));
+  --ki-copy-w: 1000px;
+  display: block; text-align: left;
+}
+.kit-intro--hero[data-ground="dark"] {
+  --ki-signal: var(--brand-color-dark-signal, var(--brand-color-signal, var(--kp-accent)));
+  --ki-ground: var(--brand-color-dark-bg);
+  --ki-disc: var(--brand-color-dark-card, var(--brand-color-dark-bg-recessed, var(--brand-color-dark-bg)));
+}
+.kit-intro--hero[data-backdrop="panel"] { --ki-copy-w: 740px; }
+
+/* Brand lockup, top-left (official file, small). */
+.kit-intro__brand { position: absolute; z-index: 4; left: var(--ki-pad-x); top: 72px; }
+.kit-intro__brand .kit-bookend__logo { justify-content: flex-start; }
+.kit-intro__brand .kit-logo--lockup,
+.kit-intro__brand .kit-logo--wordmark { max-width: calc(300px * var(--kb-logo-scale)); max-height: calc(56px * var(--kb-logo-scale)); }
+.kit-intro__brand .kit-logo-svg { width: calc(260px * var(--kb-logo-scale, 1)); }
+.kit-intro__brand .kit-logo-plate { padding: 12px 20px; border-radius: 14px; }
+
+/* Copy column. */
+.kit-intro__copy {
+  position: absolute; z-index: 3; left: var(--ki-pad-x); top: 168px; bottom: 150px;
+  width: var(--ki-copy-w); display: flex; flex-direction: column; justify-content: center;
+}
+.kit-intro--hero .kit-intro__eyebrow {
+  display: flex; align-items: center; gap: 20px; margin: 0 0 30px;
+  font-family: var(--kp-face-mono); font-size: var(--kp-fs-eyebrow); font-weight: 700;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--kp-accent);
+}
+.kit-intro__eyebrow-rule {
+  flex: none; width: 56px; height: 4px; border-radius: 2px;
+  background: var(--ki-signal); transform-origin: 0 50%;
+}
+.kit-intro--hero .kit-intro__title {
+  margin: 0; font-family: var(--kp-face-head); font-weight: 700;
+  font-size: var(--ki-title-fs, 136px); line-height: 1.0; letter-spacing: -.03em; color: var(--kp-ink);
+}
+.kit-intro__title[data-size="l"] { --ki-title-fs: 112px; }
+/* The runtime steps xl -> l -> m until the title holds one line (fitTitle). */
+.kit-intro__title[data-size="m"] { --ki-title-fs: 92px; }
+.kit-intro--hero .kit-intro__hook {
+  margin: 36px 0 0; max-width: min(860px, var(--ki-copy-w));
+  font-family: var(--kp-face-head); font-size: var(--kp-fs-quote); font-weight: 600;
+  line-height: 1.16; letter-spacing: -.012em; color: var(--kp-ink);
+}
+/* No title: the hook IS the hero line. */
+.kit-intro--hero h1.kit-intro__hook {
+  margin-top: 0; max-width: var(--ki-copy-w);
+  font-size: var(--kp-fs-headline); font-weight: 700; line-height: 1.06; letter-spacing: -.025em;
+}
+.kit-intro--hero .kit-intro__promise {
+  margin: 28px 0 0; max-width: min(900px, var(--ki-copy-w));
+  font-size: calc(var(--kp-fs-lead) - 4px); font-weight: 500; line-height: 1.4; color: var(--kp-muted);
+}
+.kit-intro--hero .kit-intro__chips { justify-content: flex-start; margin-top: 44px; }
+.kit-intro--hero .kit-intro__chip { border-color: var(--kp-rule); background: var(--kp-card); }
+
+/* Footer meta: hairline + URL / meta line. */
+.kit-intro__meta {
+  position: absolute; z-index: 3; left: var(--ki-pad-x); right: 760px; bottom: 64px;
+  display: flex; justify-content: space-between; padding-top: 22px;
+  border-top: 2px solid var(--kp-rule);
+  font-family: var(--kp-face-mono); font-size: 20px; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--kp-muted);
+}
+.kit-intro--hero[data-backdrop="panel"] .kit-intro__meta { right: calc(44% + 240px); }
+
+/* Signal scene (token-drawn, decorative). Centre (1580, 540) on 1920x1080:
+   the outer orbit clears a one-line 136 px title in the copy column. */
+.kit-intro__scene {
+  position: absolute; z-index: 1; left: 1030px; top: -10px; width: 1100px; height: 1100px;
+  pointer-events: none;
+}
+.kit-intro__disc, .kit-intro__orbit {
+  position: absolute; left: 50%; top: 50%; border-radius: 50%;
+}
+.kit-intro__disc { width: 600px; height: 600px; margin: -300px 0 0 -300px; background: var(--ki-disc); }
+.kit-intro__orbit { border: 2px solid var(--kp-rule); }
+.kit-intro__orbit--a { width: 800px; height: 800px; margin: -400px 0 0 -400px; }
+.kit-intro__orbit--b { width: 1040px; height: 1040px; margin: -520px 0 0 -520px; opacity: .7; }
+.kit-intro__arcs { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.kit-intro__arc { fill: none; stroke: var(--kp-accent); stroke-width: 6; stroke-linecap: round; }
+.kit-intro__arc--soft { stroke: var(--kp-rule); stroke-width: 6; }
+.kit-intro__dot { fill: var(--ki-signal); }
+.kit-intro__dot--ink { fill: var(--kp-accent); }
+.kit-intro__emblem {
+  position: absolute; left: 50%; top: 50%; width: 320px; height: 320px; margin: -160px 0 0 -160px;
+  display: flex; align-items: center; justify-content: center;
+}
+.kit-intro__emblem .kit-logo--mark { max-width: calc(260px * var(--kb-logo-scale)); max-height: calc(260px * var(--kb-logo-scale)); }
+.kit-intro__emblem .kit-logo-svg { width: calc(240px * var(--kb-logo-scale, 1)); }
+/* Light-only mark on a dark ground: the official file on a round brand-token plate. */
+.kit-intro__scene[data-plated] .kit-intro__emblem .kit-logo-plate {
+  width: 300px; height: 300px; padding: 0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.kit-intro__scene[data-plated] .kit-intro__emblem .kit-logo--mark { max-width: calc(190px * var(--kb-logo-scale)); max-height: calc(190px * var(--kb-logo-scale)); }
+/* One highlighted word in the title (design-system Hero: text-primary). */
+.kit-intro__accent { color: var(--kp-accent); }
+
+/* Backdrop photo under a FLAT token veil (one colour, no gradient). */
+.kit-intro__backdrop { position: absolute; z-index: 0; margin: 0; overflow: hidden; }
+.kit-intro__backdrop[data-fit="panel"] { top: 0; right: 0; bottom: 0; width: 44%; }
+.kit-intro__backdrop[data-fit="full"] { inset: 0; }
+.kit-intro__backdrop-img { display: block; width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 50%; }
+.kit-intro__veil { position: absolute; inset: 0; background: color-mix(in oklch, var(--kp-accent) 14%, transparent); }
+.kit-intro__backdrop[data-fit="full"] .kit-intro__veil { background: color-mix(in oklch, var(--ki-ground) 86%, transparent); }
+/* Panel backdrop: the scene shrinks to an emblem badge on the panel edge. */
+.kit-intro--hero[data-backdrop="panel"] .kit-intro__scene { left: calc(56% - 550px); top: 310px; }
+.kit-intro--hero[data-backdrop="panel"] .kit-intro__disc { width: 300px; height: 300px; margin: -150px 0 0 -150px; background: var(--kp-card); box-shadow: 0 30px 70px -36px color-mix(in oklch, var(--brand-color-fg) 45%, transparent); }
+.kit-intro--hero[data-backdrop="panel"] .kit-intro__orbit--a { width: 400px; height: 400px; margin: -200px 0 0 -200px; }
+.kit-intro--hero[data-backdrop="panel"] .kit-intro__orbit--b,
+.kit-intro--hero[data-backdrop="panel"] .kit-intro__arcs { display: none; }
+.kit-intro--hero[data-backdrop="panel"] .kit-intro__emblem .kit-logo--mark { max-width: calc(170px * var(--kb-logo-scale)); max-height: calc(170px * var(--kb-logo-scale)); }
+.kit-intro--hero[data-backdrop="panel"] .kit-intro__emblem .kit-logo-svg { width: calc(160px * var(--kb-logo-scale, 1)); }

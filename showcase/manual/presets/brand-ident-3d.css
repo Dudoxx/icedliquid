@@ -1,0 +1,68 @@
+/* preset: brand-ident-3d v2 — orbit lockup in space. Tokens only. OWNER OVERRIDE (2026-10-29) of the D-016
+   no-glow/no-gradient rule for this opener: light, bloom, star and wordmark halo glow. The FRONT slice of the mark and
+   of every letter stays unfiltered. No filter / blend / opacity at rest on a preserve-3d container (they flatten 3D).
+   © Dudoxx UG / Acceleate Consulting - Walid Boudabbous <walid@acceleate.com> */
+.scene .bo { position: absolute; inset: 0; z-index: 30; overflow: hidden; container-type: inline-size;
+  transform-origin: 50% 46%; background:
+    radial-gradient(120% 80% at 50% 120%, color-mix(in oklch, var(--accent) 30%, var(--brand-color-dark-bg, #0b1020)) 0%, transparent 60%),
+    linear-gradient(180deg, color-mix(in oklch, var(--brand-color-dark-bg, #0b1020) 80%, black) 0%, var(--brand-color-dark-bg, #0b1020) 100%); }
+/* nebulae: soft coloured gas, screen-blended on the 2D sky (never inside the 3D world) */
+.bo-neb { position: absolute; z-index: 0; aspect-ratio: 1.4; border-radius: 50%; pointer-events: none; mix-blend-mode: screen; filter: blur(4cqw); }
+.bo-neb--a { left: -12%; top: -18%; width: 70cqw; background: radial-gradient(closest-side, color-mix(in oklch, var(--accent) 55%, transparent), transparent); }
+.bo-neb--b { right: -14%; bottom: -24%; width: 64cqw; background: radial-gradient(closest-side, color-mix(in oklch, var(--signal) 38%, transparent), transparent); }
+.bo-neb--c { left: 28%; top: 6%; width: 50cqw; background: radial-gradient(closest-side, color-mix(in oklch, var(--accent) 30%, color-mix(in oklch, white 20%, transparent)), transparent); }
+.bo-stars { position: absolute; z-index: 1; left: 0; top: 0; border-radius: 50%; pointer-events: none; transform-origin: 50% 46%; }
+.bo-stars--0 { width: 0.12cqw; height: 0.12cqw; opacity: 0.6; }
+.bo-stars--1 { width: 0.18cqw; height: 0.18cqw; opacity: 0.8; }
+.bo-stars--2 { width: 0.26cqw; height: 0.26cqw; filter: drop-shadow(0 0 0.3cqw color-mix(in oklch, white 70%, var(--accent))); }
+.bo-rays { position: absolute; z-index: 2; left: 50%; top: 46%; width: 200cqw; aspect-ratio: 1; translate: -50% -50%; opacity: 0; pointer-events: none;
+  background: repeating-conic-gradient(from 0deg, color-mix(in oklch, white 9%, transparent) 0deg 2.5deg, transparent 2.5deg 12deg);
+  -webkit-mask-image: radial-gradient(closest-side, black 6%, transparent 62%); mask-image: radial-gradient(closest-side, black 6%, transparent 62%); mix-blend-mode: screen; }
+.bo-bokeh { position: absolute; z-index: 3; aspect-ratio: 1; border-radius: 50%; translate: -50% -50%; opacity: 0; pointer-events: none;
+  background: radial-gradient(closest-side, color-mix(in oklch, white 60%, var(--accent)) 0%, color-mix(in oklch, var(--accent) 30%, transparent) 60%, transparent 100%); }
+.bo-presents { position: absolute; z-index: 6; left: 50%; top: 46%; translate: -50% -50%; margin: 0; padding: 0.9cqw 2.2cqw 0.9cqw 2.6cqw;
+  border-radius: 99em; white-space: nowrap; opacity: 0;
+  background: color-mix(in oklch, var(--brand-color-dark-bg, #0b1020) 90%, transparent);
+  box-shadow: 0 0 2.4cqw color-mix(in oklch, var(--accent) 35%, transparent), 0 0.4cqw 1.6cqw color-mix(in oklch, black 40%, transparent);
+  color: var(--brand-color-dark-fg, #f3f5fa); font-family: var(--face-mono); font-weight: 500; font-size: 1.35cqw; text-transform: uppercase; letter-spacing: 0.42em; }
+
+/* ---- the 3D world ---- */
+.bo-cam { position: absolute; inset: 0; z-index: 5; perspective: 70cqw; perspective-origin: 50% 44%; }
+.bo-world { position: absolute; left: 50%; top: 43%; width: 0; height: 0; transform-style: preserve-3d; }
+.bo-bloom { position: absolute; left: 0; top: -1cqw; width: 72cqw; aspect-ratio: 1.7; translate: -50% -50%; border-radius: 50%; opacity: 0; pointer-events: none;
+  transform: translateZ(-10cqw);
+  background: radial-gradient(closest-side, color-mix(in oklch, var(--brand-color-bg, #f9fafd) 92%, transparent) 0%,
+    color-mix(in oklch, var(--brand-color-bg, #f9fafd) 70%, transparent) 30%, color-mix(in oklch, var(--accent) 40%, transparent) 62%, transparent 100%); }
+.bo-floor { position: absolute; left: 0; top: 8.5cqw; width: 64cqw; aspect-ratio: 5; translate: -50% -50%; border-radius: 50%; opacity: 0; pointer-events: none;
+  background: radial-gradient(closest-side, color-mix(in oklch, white 55%, var(--accent)) 0%, color-mix(in oklch, var(--accent) 30%, transparent) 50%, transparent 100%);
+  transform: rotateX(80deg); }
+.bo-lock { position: absolute; left: 0; top: 0; translate: -50% -50%; display: grid; justify-items: center; gap: 1.8cqw; transform-style: preserve-3d; }
+.bo-obj { position: relative; transform-style: preserve-3d; }
+.bo-slice { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; -webkit-user-drag: none; backface-visibility: visible; }
+.bo-mark { width: 9cqw; aspect-ratio: 344 / 302; }
+.bo-word { position: relative; width: 40cqw; aspect-ratio: 1702 / 412; transform-style: preserve-3d; }
+.bo-letter { position: absolute; inset: 0; }
+.bo-halo { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none;
+  transform: translateZ(-3cqw) scale(1.02); filter: blur(1.4cqw) brightness(1.5) saturate(1.3); }
+.bo-sheen { position: absolute; inset: 0; pointer-events: none; transform: translateZ(0.05cqw);
+  background: linear-gradient(100deg, transparent 0%, color-mix(in oklch, white 85%, transparent) 50%, transparent 100%) -60% 0 / 28% 100% no-repeat;
+  -webkit-mask-size: 100% 100%; mask-size: 100% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
+.bo-rule { position: absolute; left: 2%; right: 1.5%; bottom: -9%; height: 0.32cqw; border-radius: 99em; transform-origin: 0 50%;
+  background: var(--brand-color-signal, var(--signal));
+  box-shadow: 0 0 1cqw color-mix(in oklch, var(--brand-color-signal, var(--signal)) 80%, transparent), 0 0 2.6cqw color-mix(in oklch, var(--brand-color-signal, var(--signal)) 45%, transparent); }
+.bo-star { position: absolute; left: 97.4%; top: 23%; width: 4.4cqw; aspect-ratio: 1; translate: -50% -50%; opacity: 0; pointer-events: none;
+  color: white; filter: drop-shadow(0 0 0.4cqw white) drop-shadow(0 0 1.2cqw color-mix(in oklch, var(--accent) 70%, white)); }
+/* cobalt halo behind the white star so it reads on the light bloom too */
+.bo-star::before { content: ""; position: absolute; inset: -45%; border-radius: 50%; z-index: 0;
+  background: radial-gradient(closest-side, color-mix(in oklch, var(--brand-color-primary, var(--accent)) 95%, transparent) 0%, color-mix(in oklch, var(--brand-color-primary, var(--accent)) 55%, transparent) 45%, transparent 100%); }
+.bo-star svg { position: relative; z-index: 1; width: 100%; height: 100%; display: block; fill: currentColor; transform-origin: 50% 50%; }
+.bo-trail { position: absolute; right: 50%; top: 50%; width: 24cqw; height: 0.4cqw; margin-top: -0.2cqw; border-radius: 99em; opacity: 0;
+  transform-origin: 100% 50%; rotate: 27.5deg; background: linear-gradient(90deg, transparent, color-mix(in oklch, white 50%, var(--accent)) 70%, white); }
+.bo-ring { position: absolute; left: 97.4%; top: 23%; width: 5cqw; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; opacity: 0; pointer-events: none;
+  box-shadow: inset 0 0 0 0.22cqw white, 0 0 1.2cqw color-mix(in oklch, white 70%, var(--accent)), inset 0 0 1.2cqw color-mix(in oklch, white 70%, var(--accent)); }
+.bo-tag { position: relative; margin: 1.2cqw 0 0; padding: 0.7cqw 2cqw; border-radius: 99em; white-space: nowrap; opacity: 0;
+  background: color-mix(in oklch, var(--brand-color-dark-bg, #0b1020) 88%, transparent);
+  box-shadow: 0 0 2cqw color-mix(in oklch, var(--accent) 30%, transparent);
+  color: var(--brand-color-dark-fg, #f3f5fa); font-family: var(--face-mono); font-size: 1.2cqw; letter-spacing: 0.14em; }
+.bo-flash { position: absolute; inset: 0; z-index: 9; background: var(--brand-color-bg, white); opacity: 0; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .bo-bokeh, .bo-rays, .bo-neb { display: none; } }

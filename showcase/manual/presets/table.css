@@ -1,0 +1,15 @@
+/* preset: table — rows are shade + elevation, no borders; the focus bar is a solid token mix.
+   Rows have a MIN height: a wrapped cell grows its row instead of printing over the next one (R1-b-03 R1-c-06). */
+.tbl { flex: 1; display: grid; gap: 0.5cqw; max-width: 58cqw; margin-left: auto; font-size: var(--fs-body); padding: 1.4cqw 1.6cqw; border-radius: 1.2cqw; background: var(--card); box-shadow: var(--lift); } /* solid panel over photo plates (QA 2026-10-18) */
+.tbl--solo { max-width: none; margin-left: 0; }
+.tbl-row { display: grid; grid-template-columns: var(--tbl-cols); align-items: center; gap: 1.2cqw; min-height: var(--row-h); line-height: 1.2; padding: 0.3cqw 1.4cqw; position: relative; z-index: 1; }
+.tbl-head { height: auto; padding-block: 0.4cqw; font-size: var(--fs-label); color: var(--muted); }
+.tbl-body { position: relative; display: grid; grid-auto-rows: minmax(var(--row-h), auto); gap: 0; border-radius: 1cqw; background: var(--card); box-shadow: var(--lift); overflow: hidden; }
+.tbl-focus { position: absolute; left: 0; right: 0; top: 0; height: var(--row-h); z-index: 0; transform-origin: 0 50%; background: color-mix(in oklch, var(--accent) 14%, var(--card)); opacity: 0; }
+.tbl-td { --hot: 0; min-width: 0; color: var(--ink); font-weight: 500; position: relative; isolation: isolate; }
+.tbl-td::before { content: ''; position: absolute; inset: -0.2em -0.4em; border-radius: 0.4em; z-index: -1; pointer-events: none;
+  background-color: color-mix(in oklch, var(--accent) 18%, transparent); opacity: var(--hot); } /* focus cell lights up: opacity only */
+.tbl-td:first-child { color: var(--muted); }
+.tbl-td.is-num, .tbl-th.is-num { text-align: right; font-family: var(--face-mono); font-variant-numeric: tabular-nums; }
+.tbl-td.is-num { font-weight: 600; }
+.tbl-th.is-num { font-family: inherit; }

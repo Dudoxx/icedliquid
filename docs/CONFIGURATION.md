@@ -3,6 +3,7 @@
 
 This file holds the model, voice and tool settings. API keys are **not** here;
 they are in `.env.local` (see [README > Environment keys](../README.md#environment-keys)).
+How tools, demo mode and the prompts work, and how to add a tool: [TOOLS.md](TOOLS.md).
 
 ## How the file is checked
 

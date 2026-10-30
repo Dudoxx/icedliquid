@@ -143,6 +143,15 @@
       "open": "Bild in voller Größe öffnen",
       "title": "Erzeugtes Bild",
       "close": "Schließen"
+    },
+    "demo": {
+      "badge": "Demo",
+      "hint": "Demo-Modus: {key} ist nicht gesetzt. Tragen Sie den Schlüssel in .env.local ein, um den echten Dienst zu nutzen.",
+      "line": {
+        "knowledge": "Ergebnisse aus den mitgelieferten Wissensdateien, nicht aus dem Web.",
+        "openMeteo": "Live-Daten vom kostenlosen Dienst Open-Meteo.",
+        "bundledImage": "Ein mitgeliefertes Beispielbild, nicht aus Ihrer Anfrage erzeugt."
+      }
     }
   }
 }

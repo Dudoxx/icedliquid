@@ -4,7 +4,7 @@
  * @ddx       util
  * @domain    ui
  * @topic     voice
- * @purpose   Narrow the voice-agent tool results (get_weather, web_search, generate_image) to the shapes the icedLiquid cards render, and map a WeatherAPI condition code to a lucide glyph.
+ * @purpose   Narrow the voice-agent tool results (get_weather, web_search, generate_image, keyless demo marks) to the shapes the icedLiquid cards render, and map a WeatherAPI condition code to a lucide glyph.
  * @status    feature-local
  *
  * Shapes: lib/server/agent-tools.server.ts. The glyph table maps WeatherAPI condition codes
@@ -118,6 +118,30 @@ export function asWebHits(result: unknown): WebHit[] | null {
     if (!h || !url || !url.startsWith('https://')) return [];
     return [{ title: txt(h['title']) ?? url, url, site: new URL(url).hostname.replace(/^www\./, ''), published: txt(h['published']), summary: txt(h['summary']) ?? '' }];
   });
+}
+
+/** Env keys a demo result may name (lib/server/tool-http.server.ts `DEMO_KEYS`). */
+const DEMO_KEYS = ['EXA_API_KEY', 'WEATHER_API_KEY', 'OPENROUTER_API_KEY'] as const;
+export type DemoKey = (typeof DEMO_KEYS)[number];
+
+/** The data source of a demo result; it picks the card's demo line. */
+export type DemoSource = 'local-knowledge' | 'open-meteo' | 'bundled-image';
+const DEMO_SOURCES: readonly DemoSource[] = ['local-knowledge', 'open-meteo', 'bundled-image'];
+
+export interface DemoInfo {
+  key: DemoKey;
+  source: DemoSource;
+}
+
+/** A keyless tool result (`mode: "demo"`) → the missing key + source; any other result → null. */
+export function asDemo(result: unknown): DemoInfo | null {
+  const r = rec(result);
+  const key = txt(r?.['demo_key']);
+  const source = txt(r?.['source']);
+  if (!r || r['mode'] !== 'demo' || !key || !source) return null;
+  const k = DEMO_KEYS.find((d) => d === key);
+  const s = DEMO_SOURCES.find((d) => d === source);
+  return k && s ? { key: k, source: s } : null;
 }
 
 const GLYPH: ReadonlyArray<[number[], LucideIcon]> = [

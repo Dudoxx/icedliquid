@@ -1,0 +1,187 @@
+[
+ {
+  "id": "open-b1",
+  "at": 0.6,
+  "text": "Ask icedLiquid about the weather in Hamburg, and it answers out loud. The ears, the brain and the voice run on the laptop GPU, inside one Chrome tab.",
+  "voice": "george"
+ },
+ {
+  "id": "agenda-b1",
+  "at": 48.6,
+  "text": "One tab, the model from cache, one turn end to end, tools and cards, barge-in and the stage, the measured session, the limits, how to reproduce, and a thank you.",
+  "voice": "george"
+ },
+ {
+  "id": "tab-b1",
+  "at": 62.6,
+  "text": "The page: one model line, a Start button, four pipeline tiles and a GPU line. The credit line under the conversation thanks Liquid AI.",
+  "voice": "george"
+ },
+ {
+  "id": "tab-b2",
+  "at": 76.6,
+  "text": "LFM3-Omni does three jobs. The ears transcribe on the browser lane, the brain writes the reply, and the voice streams speech.",
+  "voice": "george"
+ },
+ {
+  "id": "tab-b3",
+  "at": 88.6,
+  "text": "Your audio never leaves the tab. Only tool calls reach the web server, and the tool keys stay there.",
+  "voice": "george"
+ },
+ {
+  "id": "cache-b1",
+  "at": 100.6,
+  "text": "In the recorded session the model loaded from the browser cache in 1477.3 milliseconds.",
+  "caption": "In the recorded session the model loaded from the browser cache in 1477.3 ms.",
+  "voice": "george"
+ },
+ {
+  "id": "cache-b2",
+  "at": 112.6,
+  "text": "The first visit downloads the weights once. Later visits read them from the cache. This manual quotes only the cached load.",
+  "voice": "george"
+ },
+ {
+  "id": "turn-b1",
+  "at": 124.6,
+  "text": "One turn. You speak, and the ears in the browser turn your words into a final transcript for the agent.",
+  "voice": "george"
+ },
+ {
+  "id": "turn-b2",
+  "at": 138.6,
+  "text": "The agent checks its phrase lists first. Then the brain thinks with the history and the tool specs, for up to 2 tool rounds.",
+  "voice": "george"
+ },
+ {
+  "id": "turn-b3",
+  "at": 152.6,
+  "text": "A tool call goes to the web server. The result comes back as data and a card, and the brain answers from it.",
+  "voice": "george"
+ },
+ {
+  "id": "turn-b4",
+  "at": 166.6,
+  "text": "Then the voice speaks the answer while it streams. Speak over it, and barge-in stops the answer and listens again.",
+  "voice": "george"
+ },
+ {
+  "id": "tools-b1",
+  "at": 180.6,
+  "text": "The weather question. The tool returns data, the page draws a card, and the spoken answer is built from the same data.",
+  "voice": "george"
+ },
+ {
+  "id": "tools-b2",
+  "at": 196.6,
+  "text": "One earlier live call each: weather in 212 milliseconds, time in 128 milliseconds, and web search in 3170 milliseconds.",
+  "caption": "One earlier live call each: weather in 212 ms, time in 128 ms, and web search in 3170 ms.",
+  "voice": "george"
+ },
+ {
+  "id": "tools-b3",
+  "at": 209.6,
+  "text": "Each tool feeds a card. Search lists 3 sources. The image tool is configured, but this session did not use it.",
+  "voice": "george"
+ },
+ {
+  "id": "bargein-b1",
+  "at": 221.6,
+  "text": "Barge-in is on in the config. Your voice must hold for 300 milliseconds and be louder than the echo of the answer.",
+  "voice": "george"
+ },
+ {
+  "id": "bargein-b2",
+  "at": 233.6,
+  "text": "Theme, goodbye and language switches come from phrase lists in the config, not from the model. A small model does not call those tools reliably.",
+  "voice": "george"
+ },
+ {
+  "id": "bargein-b3",
+  "at": 245.6,
+  "text": "Barge-in is configured, not measured in this run. Speakers can trigger it with the assistant's own voice, so use headphones.",
+  "voice": "george"
+ },
+ {
+  "id": "bargein-b4",
+  "at": 257.6,
+  "text": "Full screen fills the display with the orb, the tiles and the conversation, in light or dark. The session chips count turns, tokens and context.",
+  "voice": "george"
+ },
+ {
+  "id": "bargein-b5",
+  "at": 273.6,
+  "text": "On a phone the same tiles and chips stack in one column, and the GPU line wraps instead of cutting off.",
+  "voice": "george"
+ },
+ {
+  "id": "session-b1",
+  "at": 285.6,
+  "text": "12 answered turns. The median reply starts 1121.1 milliseconds after the question, the slow tail 2976.0 milliseconds.",
+  "caption": "12 turns answered turns. The median reply starts 1121.1 ms after the question, the slow tail 2976.0 ms.",
+  "voice": "george"
+ },
+ {
+  "id": "session-b2",
+  "at": 299.6,
+  "text": "The brain wrote at 14.4 tokens per second, the voice codec ran at 24.0 tokens per second, and the final ears pass took 161.1 milliseconds.",
+  "caption": "The brain wrote at 14.4 tokens/s, the voice codec ran at 24.0 tokens/s, and the final ears pass took 161.1 ms.",
+  "voice": "george"
+ },
+ {
+  "id": "session-b3",
+  "at": 312.6,
+  "text": "Every badge is a measurement. The tiles time each stage, the badges count context, tokens, rate and tool rounds, and Save run exports them.",
+  "voice": "george"
+ },
+ {
+  "id": "session-b4",
+  "at": 326.6,
+  "text": "Context grew from 1150 tokens on the first turn to 1491 on the last. Every median includes the typed and the mic turns.",
+  "voice": "george"
+ },
+ {
+  "id": "limits-b1",
+  "at": 338.6,
+  "text": "Browser microphone recognition is in diagnosis. Live, it returned text in 0 of 7 passes. A replay bench reached a non-empty share of 1.00, still an open gap.",
+  "caption": "Browser microphone recognition is in diagnosis. Live, it returned text in 0 of 7 passes. A replay bench reached a non-empty share of 1.00 share, still an open gap.",
+  "voice": "george"
+ },
+ {
+  "id": "limits-b2",
+  "at": 354.6,
+  "text": "The scripted questions were typed. Short unscripted microphone turns came from echo or room noise, and they stay in every median. One machine, one session.",
+  "voice": "george"
+ },
+ {
+  "id": "limits-b3",
+  "at": 368.6,
+  "text": "Asked for the time in Tokyo, it answered without the time tool, and it was wrong. The config now has a grounding guard, not yet measured live.",
+  "voice": "george"
+ },
+ {
+  "id": "reproduce-b1",
+  "at": 380.6,
+  "text": "Provision the browser weights once, start the web app, run a session and press Save run. The judge rebuilds every median from the saved turns.",
+  "voice": "george"
+ },
+ {
+  "id": "reproduce-b2",
+  "at": 394.6,
+  "text": "Then check every number against the register with the claims checker. A different number is a finding, not a failure.",
+  "voice": "george"
+ },
+ {
+  "id": "thanks-b1",
+  "at": 406.6,
+  "text": "Thank you to the team at Liquid AI. LFM3-Omni listens, thinks and speaks in one model, small enough for a browser tab. Learn more at liquid dot A I.",
+  "voice": "george"
+ },
+ {
+  "id": "thanks-b2",
+  "at": 420.6,
+  "text": "Next: how every number in these manuals was measured.",
+  "voice": "george"
+ }
+]

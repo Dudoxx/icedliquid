@@ -1,0 +1,338 @@
+/* Every colour and font comes from tokens.css (resolve-brand.mjs output). No hex here. */
+* { box-sizing: border-box; margin: 0; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html, body { min-height: 100%; }
+body {
+  background: var(--brand-color-dark-bg, var(--brand-color-fg));
+  color: var(--brand-color-fg);
+  font-family: var(--brand-typography-font-body);
+  overflow-x: hidden; /* fallback */
+  overflow-x: clip;   /* v2b: never a horizontal page scroll */
+}
+body.has-pseudo-fullscreen { overflow: hidden; }
+
+/* ===== v2b responsive player ======================================================================
+   controls.js fit() sets --stage-w (largest stage of the format ratio that fits the width AND the height left
+   under the real controls + chapter row) and --chrome-w (the control row may be wider than a short stage).
+   The CSS below is the no-JS fallback (an estimate of the chrome) and the layout the JS measures.
+   --vh = 1dvh where supported (mobile toolbars), else 1vh. --arn = the stage width/height ratio. */
+:root { --vh: 1vh; --arn: 1.7778; }
+@supports (height: 100dvh) { :root { --vh: 1dvh; } }
+[data-format="9x16"] { --arn: 0.5625; }
+[data-format="1x1"] { --arn: 1; }
+.viewport {
+  min-height: calc(var(--vh) * 100);
+  display: grid; grid-template-columns: minmax(0, 1fr);
+  align-content: center; justify-items: center; /* stage + controls + chips packed together, not spread */
+  row-gap: var(--brand-spacing-xs, 0.5rem);
+  padding: clamp(4px, 1.2vw, 16px);
+  box-sizing: border-box; max-width: 100%;
+}
+.viewport > * { min-width: 0; max-width: 100%; }
+.viewport:fullscreen { background: var(--brand-color-dark-bg, var(--brand-color-fg)); }
+.viewport:-webkit-full-screen { background: var(--brand-color-dark-bg, var(--brand-color-fg)); }
+.viewport.is-pseudo-fullscreen { position: fixed; inset: 0; z-index: 1000; height: calc(var(--vh) * 100); min-height: 0; overflow: hidden; background: var(--brand-color-dark-bg, var(--brand-color-fg)); }
+
+.stage {
+  --ar: 16 / 9;
+  position: relative; overflow: hidden;
+  aspect-ratio: var(--ar);
+  width: var(--stage-w, min(100%, calc((var(--vh) * 100 - 7rem) * var(--arn))));
+  background: var(--brand-color-bg);
+  container-type: inline-size;
+  touch-action: manipulation; /* a tap = play/pause (controls.js); no double-tap zoom, no 300 ms click delay */
+}
+[data-format="9x16"] .stage { --ar: 9 / 16; }
+[data-format="1x1"] .stage { --ar: 1 / 1; }
+
+/* Asymmetric, left-aligned layout with negative space (no centred-text-only frames). */
+.scene { position: absolute; inset: 0; padding: 8cqw 9cqw; display: flex; flex-direction: column; justify-content: center; visibility: hidden; }
+.kicker { font-size: 1.6cqw; letter-spacing: 0.01em; color: var(--brand-color-muted-foreground, var(--brand-color-fg-secondary)); margin-bottom: 2cqw; }
+/* Brand (D-016 + anti-slop): no tracked-caps eyebrow by default — a kicker is sentence case and is
+   used only when it encodes something (a sequence "03 / 21", a section name). */
+.headline { font-family: var(--brand-typography-font-heading, var(--brand-typography-font-display)); font-size: 8cqw; line-height: 1.02; font-weight: 700; max-width: 70cqw; }
+.headline .w { display: inline-block; }
+.w-italic { font-weight: 400; } /* upright: Urbanist display is never italic (brand typography) */
+.w-accent { color: var(--brand-color-primary); }
+
+.compare { display: grid; gap: 3cqw; width: 78cqw; }
+.row { display: grid; grid-template-columns: 12cqw 1fr 12cqw; align-items: center; gap: 2cqw; }
+.label { font-size: 2cqw; color: var(--brand-color-muted-foreground, var(--brand-color-fg-secondary)); }
+.bar:not(rect) { display: block; height: 3.2cqw; background: var(--brand-color-muted, var(--brand-color-fg-tertiary)); border-radius: 0.4cqw; transform-origin: left center; }
+.bar-base { width: 33%; }
+.bar-big { width: 100%; background: var(--brand-color-primary); }
+.num { font-family: var(--brand-typography-font-heading, var(--brand-typography-font-display)); font-size: 4cqw; font-weight: 700; }
+.num-big { color: var(--brand-color-primary); }
+
+.endcard { display: grid; gap: 2cqw; justify-items: start; }
+.logo { height: 9cqw; width: auto; }
+.wordmark { font-family: var(--brand-typography-font-heading, var(--brand-typography-font-display)); font-size: 7cqw; font-weight: 700; color: var(--brand-color-primary); }
+.tagline { font-size: 2.6cqw; color: var(--brand-color-fg); max-width: 60cqw; }
+
+/* narration captions — hidden between lines. SOLID ground (opacity 1 — a translucent caption lets a
+   busy frame bleed through and fails 4.5:1 at the worst pixel), >= 20 px at 1920 (1.35cqw = 26 px),
+   at most 2 rows (audio.js splits long lines into timed cues). Caption-safe zone for plates:
+   bottom 14 % of the frame. */
+.caption { position: absolute; left: 6cqw; bottom: 2.6cqw; z-index: 6; max-width: 60cqw; padding: 0.6cqw 1.1cqw;
+  border-radius: 0.6cqw; font-size: max(1.35cqw, 13px); line-height: 1.35; background: var(--brand-color-fg); color: var(--brand-color-bg);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; text-wrap: balance; /* v4.1 (R1 M3): no one-word last row */
+  opacity: 0; transform: translateY(0.4cqw); transition: opacity var(--brand-motion-duration-fast, 120ms) var(--brand-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)), transform var(--brand-motion-duration-fast, 120ms) var(--brand-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)); }
+.caption.on { opacity: 1; transform: none; }
+.caption.is-off { display: none; }
+/* v3 word captions (audio.js, lines with `words`): one .cap-w per word, the spoken one gets .on — a solid primary
+   chip, padding offset by an equal negative margin so the line never reflows. Reduced motion: a static underline
+   instead of the chip, no transition. .no-word-hl (layer param highlight: false) keeps plain text. */
+.caption .cap-w { border-radius: 0.25em; padding: 0 0.12em; margin: 0 -0.12em; text-decoration-thickness: 0.12em; text-underline-offset: 0.18em;
+  transition: background-color var(--brand-motion-duration-fast, 120ms) linear, color var(--brand-motion-duration-fast, 120ms) linear; }
+.caption .cap-w.on { background: var(--brand-color-primary); color: var(--brand-color-primary-foreground); }
+.caption.no-word-hl .cap-w.on { background: none; color: inherit; }
+@media (prefers-reduced-motion: reduce) {
+  .caption { transition: none; }
+  .caption .cap-w { transition: none; }
+  .caption .cap-w.on { background: none; color: inherit; text-decoration: underline; text-decoration-thickness: 0.12em; }
+}
+/* phones: the stage is ~370 px wide, so the caption pill takes the stage width (13 px floor, up to 3 rows), never overflows it
+   and the chapter chip (bottom right) steps aside. `.stage .caption` outranks the piece sheet's `.caption`. */
+@container (max-width: 640px) {
+  .stage .caption { translate: none; left: 3cqw; right: auto; bottom: 2cqw; width: fit-content; max-width: calc(100% - 6cqw); font-size: 13px; line-height: 1.35; padding: 5px 8px; border-radius: 6px; -webkit-line-clamp: 3; line-clamp: 3; }
+  .stage .spine { display: none; }
+}
+/* phone portrait (review round 1): the caption sits in the stage's bottom --cap-band slot, UNDER the scene (piece.css
+   reflow block moves #scenes up by that band), so it never covers the slide. Single-line cues keep the slot height. */
+@media (max-width: 600px) and (orientation: portrait) {
+  .stage .caption { translate: none; left: 8px; right: 8px; bottom: 6px; width: auto; max-width: none; min-height: calc(var(--cap-band, 66px) - 12px); display: -webkit-box;
+    font-size: 13px; line-height: 1.35; padding: 5px 8px; border-radius: 6px; -webkit-line-clamp: 3; line-clamp: 3; background: var(--brand-color-dark-card, var(--brand-color-fg)); color: var(--brand-color-dark-fg, var(--brand-color-bg)); }
+}
+
+/* ===== player bar ==========================================
+   nav.controls = one dark token bar: .ctl-transport (play, replay) · .ctl-time · .ctl-scrub · .ctl-toggles (sound, music,
+   captions, language, agenda, help, full screen). Icon-only ghost buttons, 44 x 44 px, icons from icons.js (currentColor).
+   States: hover = faint ink wash · pressed (aria-pressed / aria-expanded true) = token surface fill · off = slashed
+   icon (icons.js) + muted ink · focus-visible = ring. Tooltip = [data-tip] on :hover / :focus-visible.
+   Signal orange appears ONLY as 2 px chapter markers on the track: never a text or icon ground (2.29:1 contrast FAIL). */
+.controls { width: var(--chrome-w, var(--stage-w, min(100%, calc((var(--vh) * 100 - 7rem) * var(--arn))))); max-width: 100%; overflow-x: clip; } /* hidden tooltips (absolute, nowrap) must not widen the page on 320-360 px phones; clip keeps overflow-y visible */
+.controls {
+  --ink: var(--brand-color-dark-fg, var(--brand-color-bg));
+  --ink-muted: var(--brand-color-dark-muted-foreground, var(--brand-color-dark-fg-secondary, var(--brand-color-fg-tertiary)));
+  --surface: var(--brand-color-dark-muted, var(--brand-color-dark-card, var(--brand-color-fg-secondary)));
+  --ring: var(--brand-color-ring, var(--brand-color-dark-primary, var(--brand-color-primary)));
+  display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; grid-template-areas: "transport time scrub toggles";
+  align-items: center; column-gap: var(--brand-spacing-sm, 0.75rem);
+  padding: 4px 6px; border-radius: 12px;
+  background: var(--brand-color-dark-card, var(--brand-color-dark-bg, var(--brand-color-fg))); color: var(--ink);
+}
+.ctl-transport { grid-area: transport; display: flex; gap: 2px; }
+.ctl-time { grid-area: time; }
+.ctl-scrub { grid-area: scrub; min-width: 0; }
+.ctl-toggles { grid-area: toggles; display: flex; gap: 2px; justify-content: flex-end; }
+
+.ctl-btn {
+  position: relative; display: inline-grid; place-items: center; flex: none;
+  width: 44px; height: 44px; padding: 0; border: 0; border-radius: 10px; cursor: pointer;
+  background: transparent; color: var(--ink); font: inherit;
+  transition: background-color var(--brand-motion-duration-fast, 120ms) linear, color var(--brand-motion-duration-fast, 120ms) linear;
+}
+.ctl-btn[hidden] { display: none; }
+.ctl-btn .ico { width: 22px; height: 22px; display: block; pointer-events: none; }
+.ctl-btn:hover { background: color-mix(in oklch, var(--ink) 10%, transparent); }
+.ctl-btn[aria-pressed="true"], .ctl-btn[aria-expanded="true"] { background: var(--surface); color: var(--ink); }
+.ctl-btn[aria-pressed="true"]:hover, .ctl-btn[aria-expanded="true"]:hover { background: color-mix(in oklch, var(--surface) 80%, var(--ink)); }
+.ctl-btn[aria-pressed="false"]:not(#btn-full) { color: var(--ink-muted); } /* full screen is an action at rest, not an "off" toggle */
+#btn-play { color: var(--ink); }
+#btn-play .ico { width: 24px; height: 24px; }
+.ctl-btn:focus-visible, .controls input:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.ctl-btn:active { transform: translateY(1px); }
+
+/* tooltip: words from data-tip (controls.js keeps it equal to aria-label), above the button, solid token ground */
+.ctl-btn[data-tip]::after {
+  content: attr(data-tip); position: absolute; left: 50%; bottom: calc(100% + 8px); z-index: 40;
+  transform: translate(-50%, 4px); opacity: 0; pointer-events: none; white-space: nowrap;
+  padding: 4px 8px; border-radius: 6px; font-size: 12px; line-height: 1.3; font-weight: 600;
+  background: var(--ink); color: var(--brand-color-dark-bg, var(--brand-color-fg));
+  transition: opacity var(--brand-motion-duration-fast, 120ms) linear, transform var(--brand-motion-duration-fast, 120ms) var(--brand-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1));
+}
+.ctl-btn[data-tip]:hover::after, .ctl-btn[data-tip]:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+.ctl-transport .ctl-btn:first-child::after { left: 0; transform: translate(0, 4px); }
+.ctl-transport .ctl-btn:first-child:hover::after, .ctl-transport .ctl-btn:first-child:focus-visible::after { transform: none; }
+.ctl-toggles .ctl-btn:last-child::after { left: auto; right: 0; transform: translate(0, 4px); }
+.ctl-toggles .ctl-btn:last-child:hover::after, .ctl-toggles .ctl-btn:last-child:focus-visible::after { transform: none; }
+@media (hover: none) { .ctl-btn[data-tip]::after { display: none; } } /* touch: no tooltips at all (no sticky tip after a tap, no layout overflow) */
+/* v4.1 (R1 L1): an open popover / dialog hides its own button's tooltip (it sat on top of the language list).
+   (R1 L8): one tooltip at a time — while any [data-tip] is hovered, a focus-only tooltip elsewhere hides. */
+.ctl-btn[aria-expanded="true"]::after { opacity: 0 !important; }
+:root:has([data-tip]:hover) .ctl-btn[data-tip]:not(:hover):focus-visible::after { opacity: 0; }
+
+/* time: tabular figures, never wraps */
+.ctl-time { min-width: 0; font-size: 13px; line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--brand-color-dark-fg-secondary, var(--ink)); padding: 0 2px; }
+
+/* scrubber: a 4 px track (::before) + the played part (::after, width = --p set by controls.js) under a transparent range
+   input whose thumb is the handle. #ticks holds nav.js's chapter markers (button.scrub-mark, left: n%). */
+.scrubwrap { position: relative; height: 44px; display: flex; align-items: center; --p: 0; }
+.scrubwrap::before, .scrubwrap::after { content: ""; position: absolute; left: 0; top: 50%; height: 4px; margin-top: -2px; border-radius: 2px; pointer-events: none; }
+.scrubwrap::before { right: 0; background: var(--surface); }
+.scrubwrap::after { width: calc(var(--p) * 100%); background: var(--ink); }
+.scrubwrap input[type="range"] {
+  -webkit-appearance: none; appearance: none; position: relative; z-index: 2;
+  width: 100%; height: 44px; margin: 0; background: transparent; cursor: pointer; min-height: 0;
+}
+.scrubwrap input[type="range"]::-webkit-slider-runnable-track { height: 4px; background: transparent; border: 0; }
+.scrubwrap input[type="range"]::-moz-range-track { height: 4px; background: transparent; border: 0; }
+.scrubwrap input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; margin-top: -5px; border: 0; border-radius: 50%; background: var(--ink); }
+.scrubwrap input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border: 0; border-radius: 50%; background: var(--ink); }
+.scrubwrap:hover input[type="range"]::-webkit-slider-thumb { transform: scale(1.15); }
+.scrubwrap .ticks { position: absolute; inset: 0; height: auto; z-index: 3; pointer-events: none; } /* height: auto beats the v3 piece.css .ticks { height: 4px } */
+/* markers sit in a 14 px strip ABOVE the 4 px track line, so a click on the line always reaches #scrub (24 chapters
+   would otherwise cover most of the track). Touch: markers are view-only; the agenda and [ ] reach chapters. */
+.scrubwrap .ticks > * { position: absolute; top: 50%; width: 12px; height: 14px; margin: -16px 0 0 -6px; padding: 0; border: 0; background: transparent; pointer-events: auto; cursor: pointer; }
+.scrubwrap .ticks > *::before { content: ""; position: absolute; left: 5px; top: 4px; width: 2px; height: 10px; border-radius: 1px; background: var(--brand-color-dark-signal, var(--brand-color-signal)); }
+.scrubwrap .ticks > .is-current::before { top: 0; height: 14px; }
+@media (pointer: coarse) { .scrubwrap .ticks > * { pointer-events: none; } }
+/* chapter title tooltip (nav.js data-tip "NN · label · m:ss"), same look as the button tooltips */
+.scrubwrap .ticks > [data-tip]::after {
+  content: attr(data-tip); position: absolute; left: 50%; bottom: calc(100% + 8px); z-index: 40;
+  transform: translate(-50%, 4px); opacity: 0; pointer-events: none; white-space: nowrap;
+  padding: 4px 8px; border-radius: 6px; font-size: 12px; line-height: 1.3; font-weight: 600;
+  background: var(--ink); color: var(--brand-color-dark-bg, var(--brand-color-fg));
+  transition: opacity var(--brand-motion-duration-fast, 120ms) linear;
+}
+.scrubwrap .ticks > [data-tip]:hover::after, .scrubwrap .ticks > [data-tip]:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+@media (hover: none) { .scrubwrap .ticks > [data-tip]::after { display: none; } }
+.scrubwrap .ticks > *:first-child { display: none; } /* chapter 1 starts at 0: no marker on the track start */
+
+/* language pop-up (nav.js fills it with one button per language; aria-current = the live one). Fixed, so fit() ignores it. */
+.lang-pop { position: fixed; right: max(12px, 2vw); bottom: 72px; z-index: 1050; display: grid; gap: 2px; padding: 6px; border-radius: 12px;
+  background: var(--brand-color-dark-card, var(--brand-color-fg)); color: var(--brand-color-dark-fg, var(--brand-color-bg));
+  border: 1px solid var(--brand-color-dark-hairline, var(--brand-color-dark-muted, var(--brand-color-fg-tertiary))); }
+.lang-pop[hidden] { display: none; }
+.lang-pop button { min-width: 88px; min-height: 44px; padding: 0 14px; border: 0; border-radius: 8px; cursor: pointer; font: inherit; font-size: 14px; text-align: left;
+  background: transparent; color: inherit; }
+.lang-pop button:hover { background: color-mix(in oklch, var(--brand-color-dark-fg, var(--brand-color-bg)) 10%, transparent); }
+.lang-pop button[aria-current="true"] { background: var(--brand-color-dark-muted, var(--brand-color-dark-card)); font-weight: 700; }
+.lang-pop button:focus-visible { outline: 2px solid var(--brand-color-ring, var(--brand-color-dark-primary, var(--brand-color-primary))); outline-offset: 2px; }
+
+/* phones (<= 600 px, proven at 390): row 1 = scrubber + time across the bar; row 2 = transport left, toggles right.
+   Every target stays 44 px. Help (keyboard shortcuts) is hidden: a phone has no keyboard, and nine 44 px buttons do
+   not fit 390 px. */
+@media (max-width: 600px) {
+  /* toggles span the 1fr column too, so column 3 is only as wide as the time and the track gets the rest */
+  .controls { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "scrub scrub time" "transport toggles toggles"; row-gap: 0; column-gap: 4px; padding: 2px 4px; }
+  .ctl-transport, .ctl-toggles { gap: 0; }
+  .ctl-toggles { justify-self: end; }
+  #btn-help { display: none; }
+}
+/* 320 - 380 px: the toggles may wrap to a third row rather than overflow */
+@media (max-width: 380px) {
+  .controls { grid-template-areas: "scrub scrub time" "transport toggles toggles"; }
+  .ctl-toggles { flex-wrap: wrap; }
+}
+/* short landscape (phones on their side): the stage needs the height — one tight row, 36 px on fine pointers. */
+@media (max-height: 500px) {
+  .viewport { padding: 4px 8px; row-gap: 4px; }
+  .controls { padding: 0 4px; }
+  .ctl-btn, .scrubwrap, .scrubwrap input[type="range"] { height: 36px; }
+  .ctl-btn { width: 36px; }
+}
+@media (max-height: 500px) and (pointer: coarse) {
+  .ctl-btn, .scrubwrap, .scrubwrap input[type="range"] { height: 44px; }
+  .ctl-btn { width: 44px; }
+}
+@media (prefers-reduced-motion: reduce) { .ctl-btn, .ctl-btn[data-tip]::after { transition: none; } }
+
+/* start gate: "Play with sound" over the stage when autoplay with sound is blocked (and under reduced motion).
+   Solid token ground, >= 48 px target, visible focus ring. No glass, gradient, glow or emoji. */
+.start-gate { position: absolute; inset: 0; z-index: 30; display: grid; place-items: end center; padding-bottom: 12cqw; cursor: pointer;
+  background: color-mix(in oklch, var(--brand-color-dark-bg, var(--brand-color-fg)) 38%, transparent); }
+.start-gate button { font: inherit; font-size: clamp(1rem, 3cqw, 1.75rem); font-weight: 700; white-space: nowrap; cursor: pointer;
+  min-height: 56px; min-width: 48px; padding: 0.8em 1.6em; border: 0; border-radius: var(--brand-spacing-xs);
+  background: var(--brand-color-primary); color: var(--brand-color-primary-foreground); }
+.start-gate button:focus-visible { outline: 3px solid var(--brand-color-ring, var(--brand-color-dark-primary, var(--brand-color-primary))); outline-offset: 3px; }
+
+/* v3 help dialog (? / H / Help button): fixed inside .viewport so it also shows in full screen. Solid token panel over
+   the same scrim as the start gate. No glass, gradient, glow or blur. Key list: key | description, two pairs per row
+   from 640 px. */
+.help-overlay { position: fixed; inset: 0; z-index: 1100; display: grid; place-items: center; padding: var(--brand-spacing-sm, 0.75rem);
+  background: color-mix(in oklch, var(--brand-color-dark-bg, var(--brand-color-fg)) 60%, transparent); }
+.help-overlay[hidden] { display: none; }
+.help-panel { width: min(46rem, 100%); max-height: 100%; overflow: auto; padding: var(--brand-spacing-md, 1rem) var(--brand-spacing-lg, 1.5rem);
+  border-radius: var(--brand-spacing-xs, 0.5rem); background: var(--brand-color-bg); color: var(--brand-color-fg); }
+.help-panel h2 { font-family: var(--brand-typography-font-heading, var(--brand-typography-font-display)); font-size: 1.25rem; line-height: 1.2; margin-bottom: var(--brand-spacing-sm, 0.75rem); }
+.help-keys { list-style: none; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--brand-spacing-xs, 0.5rem) var(--brand-spacing-lg, 1.5rem); font-size: 15px; line-height: 1.35; }
+@media (min-width: 640px) { .help-keys { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.help-keys li { display: grid; grid-template-columns: 6.5em minmax(0, 1fr); align-items: baseline; gap: var(--brand-spacing-sm, 0.75rem); }
+.help-keys li[hidden] { display: none; }
+.help-k { display: flex; flex-wrap: wrap; gap: 4px; }
+.help-keys kbd { font: inherit; font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; padding: 1px 7px; border-radius: 4px;
+  border: 1px solid var(--brand-color-hairline, var(--brand-color-fg-tertiary)); background: var(--brand-color-bg-recessed, var(--brand-color-bg)); color: var(--brand-color-fg); }
+.help-close { font: inherit; font-size: 14px; white-space: nowrap; min-height: 36px; margin-top: var(--brand-spacing-md, 1rem); cursor: pointer;
+  padding: var(--brand-spacing-xs) var(--brand-spacing-md); border: 0; border-radius: var(--brand-spacing-xs);
+  background: var(--brand-color-primary); color: var(--brand-color-primary-foreground); }
+.help-close:focus-visible { outline: 2px solid var(--brand-color-ring, var(--brand-color-primary)); outline-offset: 2px; }
+@media (pointer: coarse) { .help-close { min-height: 44px; min-width: 44px; } } /* touch floor (v3 rule, kept in v4) */
+
+/* visually hidden, still read by screen readers (the Paused / Playing live region) */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+/* ===== player (viewer modes, menu, dock) ===================
+   Viewer modes on main.viewport.viewer[data-mode]: inline (the v4 layout) · full (Fullscreen API / is-pseudo-fullscreen)
+   · dock. DOCK = the viewer pinned at 0,0 with ONE transform from controls.js (translate + scale): --stage-w keeps the
+   inline value, so the stage box, hotspot %, lockWidth and AUDIT() never change (FM3). The bar hides; the dock bar
+   (#dock-bar, outside the viewer, not scaled) sits under the mini stage: play · time · expand · close.
+   Master menu, resume chip, toast: solid token grounds, no borders, no blurred shadow, no glass, no gradient.
+   Signal orange appears only as the current chapter's 3 px progress fill (never text or an icon ground). */
+.viewer[data-mode="dock"] { position: fixed; left: 0; top: 0; z-index: 1000; display: block; width: var(--stage-w); min-height: 0; padding: 0;
+  transform-origin: 0 0; overflow: hidden; }
+.viewer[data-mode="dock"] > .controls, .viewer[data-mode="dock"] > .lang-pop { display: none; }
+.dock-bar, .menu-overlay {
+  --ink: var(--brand-color-dark-fg, var(--brand-color-bg));
+  --ink-muted: var(--brand-color-dark-muted-foreground, var(--brand-color-dark-fg-secondary, var(--brand-color-fg-tertiary)));
+  --surface: var(--brand-color-dark-muted, var(--brand-color-dark-card, var(--brand-color-fg-secondary)));
+  --ring: var(--brand-color-ring, var(--brand-color-dark-primary, var(--brand-color-primary)));
+}
+.dock-bar { position: fixed; right: 16px; bottom: 16px; z-index: 1001; width: var(--dock-w, 360px); height: 44px; display: flex; align-items: center; gap: 2px;
+  padding: 0 4px; border-radius: 0 0 12px 12px; background: var(--brand-color-dark-card, var(--brand-color-dark-bg, var(--brand-color-fg))); color: var(--ink); }
+.dock-bar[hidden] { display: none; }
+.dock-bar .ctl-btn { width: 40px; height: 40px; }
+.dock-bar .ctl-time { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.dock-bar .ctl-btn[data-tip]::after { display: none; }
+.dock-bar .ctl-btn:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+/* resume chip (player-focus.js) and toast (MOTION.toast): inside the stage, so they also show in full screen and dock */
+.resume-chip { position: absolute; left: 50%; top: 6cqw; z-index: 31; translate: -50% 0; font: inherit; font-size: max(1.2cqw, 14px); font-weight: 600;
+  white-space: nowrap; min-height: 44px; padding: 0.5em 1.2em; border: 0; border-radius: 999px; cursor: pointer;
+  background: var(--brand-color-fg); color: var(--brand-color-bg); }
+.resume-chip[hidden], .player-toast[hidden] { display: none; }
+.resume-chip:focus-visible { outline: 2px solid var(--brand-color-ring, var(--brand-color-primary)); outline-offset: 3px; }
+.player-toast { position: absolute; left: 50%; top: 2.4cqw; z-index: 32; translate: -50% 0; max-width: 70cqw; padding: 0.5em 1em; border-radius: 8px;
+  font-size: max(1.1cqw, 13px); line-height: 1.35; text-align: center;
+  background: var(--brand-color-dark-card, var(--brand-color-fg)); color: var(--brand-color-dark-fg, var(--brand-color-bg)); }
+
+/* master menu (nav.js): a left panel over a scrim, inside the viewer so it shows in full screen */
+.menu-overlay { position: fixed; inset: 0; z-index: 1090; display: flex; background: color-mix(in oklch, var(--brand-color-dark-bg, var(--brand-color-fg)) 55%, transparent); }
+.menu-overlay[hidden] { display: none; }
+.menu-panel { width: min(28rem, 92vw); height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: var(--brand-spacing-sm, 0.75rem);
+  padding: var(--brand-spacing-md, 1rem); background: var(--brand-color-dark-card, var(--brand-color-dark-bg, var(--brand-color-fg))); color: var(--ink); }
+.menu-head { display: flex; align-items: center; justify-content: space-between; gap: var(--brand-spacing-sm, 0.75rem); }
+.menu-title { font-family: var(--brand-typography-font-display, var(--brand-typography-font-heading)); font-size: 1.25rem; line-height: 1.2; font-weight: 700; }
+.menu-list { overflow: auto; display: grid; align-content: start; gap: 2px; overscroll-behavior: contain; }
+.menu-act { margin: var(--brand-spacing-sm, 0.75rem) 10px 4px; font-family: var(--brand-typography-font-display, var(--brand-typography-font-heading)); font-size: 13px; font-weight: 700; color: var(--ink-muted); }
+.menu-act:first-child { margin-top: 0; }
+.menu-row { position: relative; overflow: hidden; display: grid; grid-template-columns: 2.4em minmax(0, 1fr) auto; align-items: center; gap: 10px;
+  min-height: 44px; padding: 6px 10px; border: 0; border-radius: 8px; cursor: pointer; text-align: left; text-decoration: none;
+  font: inherit; font-family: var(--brand-typography-font-body); font-size: 15px; line-height: 1.3; background: transparent; color: inherit; }
+.menu-row[hidden] { display: none; }
+.menu-row:hover { background: color-mix(in oklch, var(--ink) 10%, transparent); }
+.menu-row[aria-current="true"] { background: var(--surface); font-weight: 700; }
+.menu-row:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; }
+.menu-n, .menu-t { font-family: var(--brand-typography-font-mono, ui-monospace, monospace); font-size: 13px; font-variant-numeric: tabular-nums; color: var(--ink-muted); }
+.menu-fill { position: absolute; left: 0; bottom: 0; height: 3px; width: calc(var(--fill, 0) * 100%); background: var(--brand-color-dark-signal, var(--brand-color-signal)); pointer-events: none; }
+.menu-row:not([aria-current="true"]) .menu-fill { display: none; }
+.menu-foot { display: grid; gap: 2px; padding-top: var(--brand-spacing-sm, 0.75rem); }
+.menu-foot .menu-row { grid-template-columns: 24px minmax(0, 1fr); font-size: 14px; }
+.menu-ico { display: grid; place-items: center; color: var(--ink-muted); }
+.menu-ico .ico { width: 20px; height: 20px; }
+.menu-row[role="switch"][aria-checked="true"] .menu-ico { color: var(--ink); }
+.menu-row[role="switch"][aria-checked="false"] .menu-l { color: var(--ink-muted); }
+.menu-x { color: var(--ink); }
+.menu-x[data-tip]::after { display: none; }
+@media (prefers-reduced-motion: reduce) { .menu-row { transition: none; } }
+@media (max-width: 600px) { #btn-dock { display: none; } } /* v5: phones have no room for a mini player; the bar keeps 44 px targets at 390 */

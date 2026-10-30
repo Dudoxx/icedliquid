@@ -143,6 +143,15 @@
       "open": "Open image full size",
       "title": "Generated image",
       "close": "Close"
+    },
+    "demo": {
+      "badge": "Demo",
+      "hint": "Demo mode: {key} is not set. Add it to .env.local to use the real service.",
+      "line": {
+        "knowledge": "Results from the bundled knowledge files, not the live web.",
+        "openMeteo": "Live data from the free Open-Meteo service.",
+        "bundledImage": "A bundled sample picture, not made from your request."
+      }
     }
   }
 }

@@ -1,0 +1,933 @@
+<!doctype html>
+<html lang="en" data-brand="dudoxx">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>icedLiquid, a voice assistant in one Chrome tab</title>
+<!-- Generated icedLiquid deck. Opens from file://. -->
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/deck.css" />
+<link rel="stylesheet" href="assets/deck-anim.css" />
+<link rel="stylesheet" href="assets/brand.css" />
+<link rel="stylesheet" href="assets/kit.css" />
+<link rel="stylesheet" href="assets/patterns.css" />
+<link rel="stylesheet" href="assets/img-treat.css" />
+<link rel="stylesheet" href="assets/bookends.css" />
+<style>
+  /* Deck-local only: the kit slide ground. No value is authored here. */
+  .kit-slide { background: var(--brand-color-bg, var(--slide-ground)); }
+  /* Disjoint lanes: the player HUD (home/carousel/pause buttons, top-left) must not
+     sit on the kit header logo; the kit footer carries the slide index, so the
+     engine counter is hidden and the key hint moves to the empty top band. */
+  .deck-standalone .kit-slide .kit-header { padding-left: 220px; }
+  .deck-standalone .counter { display: none; }
+  /* Bookend camera: the rig is the .ddx-camera wrapper; the edge a pan / orbit
+     uncovers shows the section, painted the bookend's own ground. */
+  .kit-slide--bookend:has(> .ddx-camera > .kit-bookend[data-ground="dark"]) { background: var(--brand-color-dark-bg); }
+  .deck-standalone .hint { bottom: auto; top: 28px; left: 50%; transform: translateX(-50%); }
+  /* Camera transition world (task 053): transitions.js moves #stage-world;
+     each slide sits at its world anchor (--cam-x = data-cam-x). */
+  #stage-world { position: absolute; left: 0; top: 0; width: var(--stage-w, 1920px); height: var(--stage-h, 1080px); transform-origin: 0 0; }
+  #stage-world > .slide { translate: var(--cam-x, 0px) 0; }
+
+</style>
+</head>
+<body>
+<div id="deck" class="deck-standalone">
+  <div class="hud-btns">
+    <div class="hud-btn" id="homeBtn" title="First slide (Home)">&#8962;</div>
+    <div class="hud-btn" id="czBtn" title="Carousel (C)">&#9636;</div>
+    <div class="hud-btn" id="pauseBtn" role="button" aria-pressed="false" aria-label="Pause motion" title="Pause motion (P)">&#10073;&#10073;</div>
+  </div>
+  <div class="nav-arrow prev" id="navPrev">&#8249;</div>
+  <div class="nav-arrow next" id="navNext">&#8250;</div>
+  <div class="counter"><b id="cur">1</b> / <span id="tot">1</span> &nbsp;<span id="secname"></span></div>
+  <div class="hint"><b>&#8592;/&#8594;</b> nav · <b>O</b> overview · <b>C</b> carousel · <b>F</b> full · <b>R</b> replay · <b>P</b> pause</div>
+  <div id="stage"><div id="stage-world">
+<section class="slide kit-slide kit-slide--bookend" data-slide-id="s-intro" data-label="s-intro" data-sec="icedLiquid, a voice assistant in one Chrome tab" data-notes="Open on the brand. One sentence: ears, brain and voice in a browser tab, credited to Liquid AI." data-cam-x="0" data-cam-y="0" data-cam-zoom="1" style="--cam-x:0px"><div class="ddx-camera kit-camera"><section class="kit-pattern kit-bookend kit-intro kit-intro--hero" data-kit="intro" data-kit-pattern="intro" data-ground="light" data-brand="dudoxx" data-kit-reveal="wipe" data-duration-ms="3800" data-layout="hero" data-backdrop="none"><div class="kit-intro__scene" aria-hidden="true"><span class="kit-intro__orbit kit-intro__orbit--b"></span><span class="kit-intro__orbit kit-intro__orbit--a"></span><span class="kit-intro__disc"></span><svg class="kit-intro__arcs" viewBox="0 0 1100 1100" aria-hidden="true"><path class="kit-intro__arc" d="M362.2 196.8A400 400 0 0 1 856.4 292.9"/><path class="kit-intro__arc" d="M727.9 1038.6A520 520 0 0 1 274.4 991"/><path class="kit-intro__arc kit-intro__arc--soft" d="M873.4 655.1A340 340 0 0 1 643.7 876.8"/><circle class="kit-intro__dot" cx="856.4" cy="292.9" r="14"/><circle class="kit-intro__dot kit-intro__dot--ink" cx="274.4" cy="991" r="10"/><circle class="kit-intro__dot kit-intro__dot--ink" cx="643.7" cy="876.8" r="10"/></svg><div class="kit-intro__emblem"><div class="kit-bookend__logo" data-logo-scale="10" data-reveal="wipe"><img data-kit="logo" class="kit-logo kit-logo--mark" data-brand="dudoxx" src="assets/dudoxx-logo.png" alt="Dudoxx"></div></div></div><div class="kit-intro__brand"><div class="kit-bookend__logo" data-logo-scale="10" data-reveal="wipe"><img data-kit="logo" class="kit-logo kit-logo--lockup" data-brand="dudoxx" src="assets/dudoxx-typography.png" alt="Dudoxx"></div></div><div class="kit-intro__copy"><p class="kit-intro__eyebrow"><span class="kit-intro__eyebrow-rule" aria-hidden="true"></span><span class="kit-intro__eyebrow-text" data-kit-text>Field report · one Chrome tab</span></p><h1 class="kit-intro__title" data-kit-text data-size="xl">icedLiquid</h1><p class="kit-intro__hook" data-kit-claim data-kit-text>A voice assistant that lives in one Chrome tab.</p><p class="kit-intro__promise" data-kit-text>What we measured in one session, and where it still fails. Built on LFM models by Liquid AI (https://www.liquid.ai).</p><ul class="kit-intro__chips"><li class="kit-intro__chip" data-kit-text>Measured</li><li class="kit-intro__chip" data-kit-text>Open gaps</li><li class="kit-intro__chip" data-kit-text>Reproduce</li></ul></div><div class="kit-intro__meta"><span data-kit-text>dudoxx.com</span></div></section></div></section>
+<section class="slide kit-slide" data-slide-id="s-hook" data-label="s-hook" data-sec="Hook" data-notes="The median reply over the whole session, most turns typed. Stress: no server ran the model." data-cam-x="0" data-cam-y="0" data-cam-zoom="1" style="--cam-x:0px">
+<header data-kit="header" class="kit-header" data-ground="light"><div class="kit-header__logo"><img data-kit="logo" class="kit-logo kit-logo--lockup" data-brand="dudoxx" src="assets/dudoxx-typography.png" alt="Dudoxx"></div><div class="kit-header__section">Hook</div></header>
+<div class="ddx-camera kit-camera"><section class="kit-pattern kit-pattern--big-number" data-kit="pattern:big-number" data-kit-pattern="big-number" data-slide="s-hook" data-copy-side="left" data-safe-edge="left" data-safe-box="5 10 45 80" data-ground="light"><div class="kit-copy" data-kit-copy><p class="kit-kicker">Hook</p><h1 class="kit-headline" data-kit-claim>icedLiquid answers a question in about one second.</h1><p class="kit-evidence">Measured over 12 turns in one recorded session, most of them typed. Brain and voice ran on the laptop GPU inside one Chrome tab. No server ran the model.</p></div><div class="kit-big" data-kit-visual><p class="kit-big__figure">1121.1</p><svg class="kit-big__rule" viewBox="0 0 480 16" aria-hidden="true"><rect class="kit-fill-accent" x="0" y="0" width="480" height="16" rx="8"/></svg><p class="kit-big__meaning">milliseconds, the median time from the end of a question to the first audio</p></div></section></div>
+<footer data-kit="footer" class="kit-footer" data-ground="light"><span class="kit-footer__brand">Dudoxx</span><span class="kit-footer__url">dudoxx.com</span><span class="kit-footer__index">02 / 14</span></footer>
+</section>
+<section class="slide kit-slide" data-slide-id="s-problem" data-label="s-problem" data-sec="Problem" data-notes="Left is the usual cloud chain. The arrow draws to the right: one model, one tab." data-cam-x="0" data-cam-y="0" data-cam-zoom="1" style="--cam-x:0px">
+<header data-kit="header" class="kit-header" data-ground="light"><div class="kit-header__logo"><img data-kit="logo" class="kit-logo kit-logo--lockup" data-brand="dudoxx" src="assets/dudoxx-typography.png" alt="Dudoxx"></div><div class="kit-header__section">Problem</div></header>
+<div class="ddx-camera kit-camera"><section class="kit-pattern kit-pattern--split-compare" data-kit="pattern:split-compare" data-kit-pattern="split-compare" data-slide="s-problem" data-copy-side="center" data-safe-edge="center" data-safe-box="10 8 80 22" data-ground="light"><div class="kit-copy kit-copy--top" data-kit-copy><p class="kit-kicker">Problem</p><h1 class="kit-headline" data-kit-claim>A typical voice assistant sends your audio to a server.</h1></div><div class="kit-split"><div class="kit-split__panel kit-split__panel--a"><p class="kit-split__label">Usual path</p><p class="kit-split__body">the microphone streams to a cloud speech service, a hosted language model and a voice service. Three hops, and the audio leaves the device.</p></div><svg class="kit-split__arrow" viewBox="0 0 96 48" aria-hidden="true" data-kit-visual><path class="kit-stroke-accent" d="M8 24 H80 M64 8 L84 24 L64 40"/></svg><div class="kit-split__panel kit-split__panel--b"><p class="kit-split__label">icedLiquid</p><p class="kit-split__body">one LFM3-Omni model by Liquid AI hears, thinks and speaks in the tab on WebGPU. The audio never leaves the machine.</p></div></div></section></div>
+<footer data-kit="footer" class="kit-footer" data-ground="light"><span class="kit-footer__brand">Dudoxx</span><span class="kit-footer__url">dudoxx.com</span><span class="kit-footer__index">03 / 14</span></footer>
+</section>
+<section class="slide kit-slide" data-slide-id="s-guess" data-label="s-guess" data-sec="Problem" data-notes="The tension: a small model will guess. The fix is not a bigger model, it is a tool call." data-cam-x="0" data-cam-y="0" data-cam-zoom="1" style="--cam-x:0px">
+<header data-kit="header" class="kit-header" data-ground="light"><div class="kit-header__logo"><img data-kit="logo" class="kit-logo kit-logo--lockup" data-brand="dudoxx" src="assets/dudoxx-typography.png" alt="Dudoxx"></div><div class="kit-header__section">Problem</div></header>
+<div class="ddx-camera kit-camera"><section class="kit-pattern kit-pattern--quote" data-kit="pattern:quote" data-kit-pattern="quote" data-slide="s-guess" data-copy-side="center" data-safe-edge="center" data-safe-box="5 10 58 80" data-ground="light"><div class="kit-copy" data-kit-copy><p class="kit-kicker">Problem</p><h1 class="kit-headline" data-kit-claim>A small model that guesses is worse than no model.</h1><blockquote class="kit-quote"><svg class="kit-quote__mark" viewBox="0 0 96 72" aria-hidden="true" data-kit-visual><path class="kit-fill-accent" d="M0 72V40C0 16 12 4 36 0v16C24 20 20 28 20 40h16v32zm56 0V40C56 16 68 4 92 0v16C80 20 76 28 76 40h16v32z"/></svg><p class="kit-quote__text">A small model that guesses the time is worse than no model. So icedLiquid calls a tool for anything current and answers only from the result.</p><p class="kit-quote__who"><cite>Design rule behind the icedLiquid tools</cite></p></blockquote></div></section></div>
+<footer data-kit="footer" class="kit-footer" data-ground="light"><span class="kit-footer__brand">Dudoxx</span><span class="kit-footer__url">dudoxx.com</span><span class="kit-footer__index">04 / 14</span></footer>
+</section>
+<section class="slide kit-slide" data-slide-id="s-arch" data-label="s-arch" data-sec="How it works" data-notes="Walk the arrows: mic, ears, brain, tools, voice. Every stage shows its own timing tile." data-cam-x="0" data-cam-y="0" data-cam-zoom="1" style="--cam-x:0px">
+<header data-kit="header" class="kit-header" data-ground="light"><div class="kit-header__logo"><img data-kit="logo" class="kit-logo kit-logo--lockup" data-brand="dudoxx" src="assets/dudoxx-typography.png" alt="Dudoxx"></div><div class="kit-header__section">How it works</div></header>
+<div class="ddx-camera kit-camera"><section class="kit-pattern kit-pattern--process-flow" data-kit="pattern:process-flow" data-kit-pattern="process-flow" data-slide="s-arch" data-copy-side="left" data-safe-edge="left" data-safe-box="5 8 90 26" data-ground="light"><div class="kit-copy kit-copy--top" data-kit-copy><p class="kit-kicker">How it works</p><h1 class="kit-headline" data-kit-claim>One model hears, thinks and speaks inside the tab.</h1></div><div class="kit-flow"><div class="kit-flow__nodes" data-n="5" data-kit-visual data-kit-diagram="kit-flow" role="img" aria-label="One model hears, thinks and speaks inside the tab."><div class="kit-flow__node kit-flow__node--1"><p class="kit-flow__step">01</p><p class="kit-flow__name">Mic</p><p class="kit-flow__note">the audio stays on the machine</p></div><svg class="kit-flow__arrow kit-flow__arrow--2" viewBox="0 0 64 32" aria-hidden="true"><path class="kit-stroke-accent" d="M4 16 H56 M44 4 L58 16 L44 28"/></svg><div class="kit-flow__node kit-flow__node--2"><p class="kit-flow__step">02</p><p class="kit-flow__name">Ears</p><p class="kit-flow__note">speech recognition on WebGPU, lane browser</p></div><svg class="kit-flow__arrow kit-flow__arrow--3" viewBox="0 0 64 32" aria-hidden="true"><path class="kit-stroke-accent" d="M4 16 H56 M44 4 L58 16 L44 28"/></svg><div class="kit-flow__node kit-flow__node--3"><p class="kit-flow__step">03</p><p class="kit-flow__name">Brain</p><p class="kit-flow__note">LFM3-Omni reads the turn and picks a tool</p></div><svg class="kit-flow__arrow kit-flow__arrow--4" viewBox="0 0 64 32" aria-hidden="true"><path class="kit-stroke-accent" d="M4 16 H56 M44 4 L58 16 L44 28"/></svg><div class="kit-flow__node kit-flow__node--4"><p class="kit-flow__step">04</p><p class="kit-flow__name">Tools</p><p class="kit-flow__note">weather, time and search, drawn as a card</p></div><svg class="kit-flow__arrow kit-flow__arrow--5" viewBox="0 0 64 32" aria-hidden="true"><path class="kit-stroke-accent" d="M4 16 H56 M44 4 L58 16 L44 28"/></svg><div class="kit-flow__node kit-flow__node--5"><p class="kit-flow__step">05</p><p class="kit-flow__name">Voice</p><p class="kit-flow__note">codec tokens become audio while it still writes</p></div></div></div></section></div>
+<footer data-kit="footer" class="kit-footer" data-ground="light"><span class="kit-footer__brand">Dudoxx</span><span class="kit-footer__url">dudoxx.com</span><span class="kit-footer__index">05 / 14</span></footer>
+</section>
+<section class="slide kit-slide" data-slide-id="s-tools" data-label="s-tools" data-sec="How it works" data-notes="You hear the short answer and read the long one on the card. The latencies come from an earlier live check; the screen is a later capture." data-cam-x="0" data-cam-y="0" data-cam-zoom="1" style="--cam-x:0px">
+<header data-kit="header" class="kit-header" data-ground="light"><div class="kit-header__logo"><img data-kit="logo" class="kit-logo kit-logo--lockup" data-brand="dudoxx" src="assets/dudoxx-typography.png" alt="Dudoxx"></div><div class="kit-header__section">How it works</div></header>
+<div class="ddx-camera kit-camera"><section class="kit-pattern kit-pattern--hero-image-copy" data-kit="pattern:hero-image-copy" data-kit-pattern="hero-image-copy" data-slide="s-tools" data-copy-side="left" data-safe-edge="left" data-safe-w="40" data-safe-box="0 0 40 100" data-ground="light"><figure class="kit-media scrim--light grain" data-copy-side="left" data-safe-edge="left" data-focal-x="80" data-focal-y="50" data-kit-visual><img class="kit-media__img" src="media/light-weather.png" alt="icedLiquid answering a weather question with a weather card" decoding="sync"></figure><div class="kit-copy kit-copy--over-image" data-kit-copy><p class="kit-kicker">How it works</p><h1 class="kit-headline" data-kit-claim>Tools make the answers of a small model checkable.</h1><p class="kit-evidence kit-evidence--lead">10 tools — weather, time, web search, theme, language, end of session</p><p class="kit-evidence">100.0 % right tool calls at N=100 on the MLX engine</p><p class="kit-evidence">Earlier live check: 212 ms weather lookup, 3170 ms web search. The screen is a later capture.</p></div></section></div>
+<footer data-kit="footer" class="kit-footer" data-ground="light"><span class="kit-footer__brand">Dudoxx</span><span class="kit-footer__url">dudoxx.com</span><span class="kit-footer__index">06 / 14</span></footer>
+</section>
+<section class="slide kit-slide" data-slide-id="s-session" data-label="s-session" data-sec="Measured" data-notes="Bars grow: reply, brain, voice start, ears. The p90 is the weather turn." data-cam-x="0" data-cam-y="0" data-cam-zoom="1" style="--cam-x:0px">
+<header data-kit="header" class="kit-header" data-ground="light"><div class="kit-header__logo"><img data-kit="logo" class="kit-logo kit-logo--lockup" data-brand="dudoxx" src="assets/dudoxx-typography.png" alt="Dudoxx"></div><div class="kit-header__section">Measured</div></header>
+<div class="ddx-camera kit-camera"><section class="kit-pattern kit-pattern--chart" data-kit="pattern:chart" data-kit-pattern="chart" data-slide="s-session" data-copy-side="left" data-safe-edge="left" data-safe-box="5 8 34 84" data-ground="light"><div class="kit-copy" data-kit-copy><p class="kit-kicker">Measured</p><h1 class="kit-headline" data-kit-claim>The brain takes the largest share of a median reply.</h1><p class="kit-evidence">Medians in milliseconds over one session. The slow end, 2976.0 ms at p90, is the weather turn with two model rounds.</p></div><div class="kit-chart"><svg class="kit-chart__svg" id="s-session-chart" viewBox="0 0 1040 560" data-kit-chart data-kit-visual role="img" aria-label="The brain takes the largest share of a median reply."><rect class="kit-fill-rule" x="0" y="500" width="1040" height="4"/><rect class="kit-fill-accent bar" data-value="1121.1" x="58" y="40" width="144" height="460" rx="6"/><text class="kit-chart__value" x="130" y="28">1121.1</text><text class="kit-chart__label" x="130" y="540">Reply</text><rect class="kit-fill-accent bar" data-value="837.9" x="318" y="156" width="144" height="344" rx="6"/><text class="kit-chart__value" x="390" y="144">837.9</text><text class="kit-chart__label" x="390" y="540">Brain</text><rect class="kit-fill-accent bar" data-value="282.9" x="578" y="384" width="144" height="116" rx="6"/><text class="kit-chart__value" x="650" y="372">282.9</text><text class="kit-chart__label" x="650" y="540">Voice start</text><rect class="kit-fill-accent bar" data-value="161.1" x="838" y="432" width="144" height="68" rx="6"/><text class="kit-chart__value" x="910" y="420">161.1</text><text class="kit-chart__label" x="910" y="540">Ears</text></svg></div></section></div>
+<footer data-kit="footer" class="kit-footer" data-ground="light"><span class="kit-footer__brand">Dudoxx</span><span class="kit-footer__url">dudoxx.com</span><span class="kit-footer__index">07 / 14</span></footer>
+</section>
+<section class="slide kit-slide" data-slide-id="s-rates" data-label="s-rates" data-sec="Measured" data-notes="Three figures: brain rate, voice rate, context size. History did not slow the brain visibly." data-cam-x="0" data-cam-y="0" data-cam-zoom="1" style="--cam-x:0px">
+<header data-kit="header" class="kit-header" data-ground="light"><div class="kit-header__logo"><img data-kit="logo" class="kit-logo kit-logo--lockup" data-brand="dudoxx" src="assets/dudoxx-typography.png" alt="Dudoxx"></div><div class="kit-header__section">Measured</div></header>
+<div class="ddx-camera kit-camera"><section class="kit-pattern kit-pattern--kpi-trio" data-kit="pattern:kpi-trio" data-kit-pattern="kpi-trio" data-slide="s-rates" data-copy-side="left" data-safe-edge="left" data-safe-box="5 8 90 26" data-ground="light"><div class="kit-copy kit-copy--top" data-kit-copy><p class="kit-kicker">Measured</p><h1 class="kit-headline" data-kit-claim>Generation stayed steady while the conversation grew.</h1></div><div class="kit-kpi" data-kit-visual><div class="kit-kpi__tile kit-kpi__tile--1"><p class="kit-kpi__value">14.4</p><svg class="kit-kpi__meter" viewBox="0 0 400 12" aria-hidden="true"><rect class="kit-fill-rule" x="0" y="0" width="400" height="12" rx="6"/><rect class="kit-fill-accent bar" data-value="100" x="0" y="0" width="400" height="12" rx="6"/></svg><p class="kit-kpi__label">tok/s, brain generation rate, median</p></div><div class="kit-kpi__tile kit-kpi__tile--2"><p class="kit-kpi__value">24.0</p><svg class="kit-kpi__meter" viewBox="0 0 400 12" aria-hidden="true"><rect class="kit-fill-rule" x="0" y="0" width="400" height="12" rx="6"/><rect class="kit-fill-accent bar" data-value="100" x="0" y="0" width="400" height="12" rx="6"/></svg><p class="kit-kpi__label">tok/s, voice codec token rate, median</p></div><div class="kit-kpi__tile kit-kpi__tile--3"><p class="kit-kpi__value">1491</p><svg class="kit-kpi__meter" viewBox="0 0 400 12" aria-hidden="true"><rect class="kit-fill-rule" x="0" y="0" width="400" height="12" rx="6"/><rect class="kit-fill-accent bar" data-value="100" x="0" y="0" width="400" height="12" rx="6"/></svg><p class="kit-kpi__label">tokens of context on the last turn, up from 1150</p></div></div></section></div>
+<footer data-kit="footer" class="kit-footer" data-ground="light"><span class="kit-footer__brand">Dudoxx</span><span class="kit-footer__url">dudoxx.com</span><span class="kit-footer__index">08 / 14</span></footer>
+</section>
+<section class="slide kit-slide" data-slide-id="s-load" data-label="s-load" data-sec="Measured" data-notes="Cold versus cached. Two different runs, so read it as an order of magnitude." data-cam-x="0" data-cam-y="0" data-cam-zoom="1" style="--cam-x:0px">
+<header data-kit="header" class="kit-header" data-ground="light"><div class="kit-header__logo"><img data-kit="logo" class="kit-logo kit-logo--lockup" data-brand="dudoxx" src="assets/dudoxx-typography.png" alt="Dudoxx"></div><div class="kit-header__section">Measured</div></header>
+<div class="ddx-camera kit-camera"><section class="kit-pattern kit-pattern--split-compare" data-kit="pattern:split-compare" data-kit-pattern="split-compare" data-slide="s-load" data-copy-side="center" data-safe-edge="center" data-safe-box="10 8 80 22" data-ground="light"><div class="kit-copy kit-copy--top" data-kit-copy><p class="kit-kicker">Measured</p><h1 class="kit-headline" data-kit-claim>The browser cache turns a slow first load into a short wait.</h1></div><div class="kit-split"><div class="kit-split__panel kit-split__panel--a"><p class="kit-split__label">Cold load</p><p class="kit-split__body">6015.3 ms in the WebGPU bench run, weights downloaded on a cache miss.</p></div><svg class="kit-split__arrow" viewBox="0 0 96 48" aria-hidden="true" data-kit-visual><path class="kit-stroke-accent" d="M8 24 H80 M64 8 L84 24 L64 40"/></svg><div class="kit-split__panel kit-split__panel--b"><p class="kit-split__label">From cache</p><p class="kit-split__body">1477.3 ms in the recorded session. Two runs one day apart: an order of magnitude, not an A/B test.</p></div></div></section></div>
+<footer data-kit="footer" class="kit-footer" data-ground="light"><span class="kit-footer__brand">Dudoxx</span><span class="kit-footer__url">dudoxx.com</span><span class="kit-footer__index">09 / 14</span></footer>
+</section>
+<section class="slide kit-slide" data-slide-id="s-reproduce" data-label="s-reproduce" data-sec="Reproduce" data-notes="Five steps. The last one matters most: every figure checks against the register." data-cam-x="0" data-cam-y="0" data-cam-zoom="1" style="--cam-x:0px">
+<header data-kit="header" class="kit-header" data-ground="light"><div class="kit-header__logo"><img data-kit="logo" class="kit-logo kit-logo--lockup" data-brand="dudoxx" src="assets/dudoxx-typography.png" alt="Dudoxx"></div><div class="kit-header__section">Reproduce</div></header>
+<div class="ddx-camera kit-camera"><section class="kit-pattern kit-pattern--timeline" data-kit="pattern:timeline" data-kit-pattern="timeline" data-slide="s-reproduce" data-copy-side="left" data-safe-edge="left" data-safe-box="5 8 90 26" data-ground="light"><div class="kit-copy kit-copy--top" data-kit-copy><p class="kit-kicker">Reproduce</p><h1 class="kit-headline" data-kit-claim>Anyone with a WebGPU Mac can rerun this session.</h1></div><div class="kit-timeline" data-n="5"><svg class="kit-timeline__rail" viewBox="0 0 1728 48" aria-hidden="true" data-kit-visual><rect class="kit-fill-rule" x="0" y="20" width="1728" height="8" rx="4"/><circle class="kit-fill-accent" cx="172" cy="24" r="12"/><circle class="kit-fill-accent" cx="516" cy="24" r="12"/><circle class="kit-fill-accent" cx="860" cy="24" r="12"/><circle class="kit-fill-accent" cx="1204" cy="24" r="12"/><circle class="kit-fill-accent" cx="1548" cy="24" r="12"/></svg><ol class="kit-timeline__steps"><li class="kit-timeline__step"><p class="kit-timeline__when">Step 1</p><p class="kit-timeline__what">provision the browser weights once with provision_webgpu.py</p></li><li class="kit-timeline__step"><p class="kit-timeline__when">Step 2</p><p class="kit-timeline__what">start the app with ./ddx-manage.sh ui on port 3400</p></li><li class="kit-timeline__step"><p class="kit-timeline__when">Step 3</p><p class="kit-timeline__what">press Start talking once and ask for the weather</p></li><li class="kit-timeline__step"><p class="kit-timeline__when">Step 4</p><p class="kit-timeline__what">export the session and run judge-voice-agent.py</p></li><li class="kit-timeline__step"><p class="kit-timeline__when">Step 5</p><p class="kit-timeline__what">check every number with claims.py</p></li></ol></div></section></div>
+<footer data-kit="footer" class="kit-footer" data-ground="light"><span class="kit-footer__brand">Dudoxx</span><span class="kit-footer__url">dudoxx.com</span><span class="kit-footer__index">10 / 14</span></footer>
+</section>
+<section class="slide kit-slide" data-slide-id="s-mic" data-label="s-mic" data-sec="Open gaps" data-notes="This is not a win. The register marks it open, and so do we." data-cam-x="0" data-cam-y="0" data-cam-zoom="1" style="--cam-x:0px">
+<header data-kit="header" class="kit-header" data-ground="light"><div class="kit-header__logo"><img data-kit="logo" class="kit-logo kit-logo--lockup" data-brand="dudoxx" src="assets/dudoxx-typography.png" alt="Dudoxx"></div><div class="kit-header__section">Open gaps</div></header>
+<div class="ddx-camera kit-camera"><section class="kit-pattern kit-pattern--big-number" data-kit="pattern:big-number" data-kit-pattern="big-number" data-slide="s-mic" data-copy-side="left" data-safe-edge="left" data-safe-box="5 10 45 80" data-ground="light"><div class="kit-copy" data-kit-copy><p class="kit-kicker">Open gaps</p><h1 class="kit-headline" data-kit-claim>Browser microphone recognition is still in diagnosis.</h1><p class="kit-evidence">A replay bench the next night reached a non-empty share of 1.00, still an open gap. The server gateway scored 5.7 % word errors at 166.0 ms: a comparison point, not the demo path.</p></div><div class="kit-big" data-kit-visual><p class="kit-big__figure">0 of 7</p><svg class="kit-big__rule" viewBox="0 0 480 16" aria-hidden="true"><rect class="kit-fill-accent" x="0" y="0" width="480" height="16" rx="8"/></svg><p class="kit-big__meaning">live microphone passes that returned text in the browser lane</p></div></section></div>
+<footer data-kit="footer" class="kit-footer" data-ground="light"><span class="kit-footer__brand">Dudoxx</span><span class="kit-footer__url">dudoxx.com</span><span class="kit-footer__index">11 / 14</span></footer>
+</section>
+<section class="slide kit-slide" data-slide-id="s-limits" data-label="s-limits" data-sec="Open gaps" data-notes="Three limits, said plainly: the Tokyo answer, mixed turns, and capture-time rough edges (the cold first press is fixed since)." data-cam-x="0" data-cam-y="0" data-cam-zoom="1" style="--cam-x:0px">
+<header data-kit="header" class="kit-header" data-ground="light"><div class="kit-header__logo"><img data-kit="logo" class="kit-logo kit-logo--lockup" data-brand="dudoxx" src="assets/dudoxx-typography.png" alt="Dudoxx"></div><div class="kit-header__section">Open gaps</div></header>
+<div class="ddx-camera kit-camera"><section class="kit-pattern kit-pattern--card-grid" data-kit="pattern:card-grid" data-kit-pattern="card-grid" data-slide="s-limits" data-copy-side="left" data-safe-edge="left" data-safe-box="5 8 90 26" data-ground="light"><div class="kit-copy kit-copy--top" data-kit-copy><p class="kit-kicker">Open gaps</p><h1 class="kit-headline" data-kit-claim>The session also shows where icedLiquid still fails.</h1></div><ul class="kit-cards" data-n="3" data-rows="1" data-kit-visual><li class="kit-card"><svg class="kit-card__badge" viewBox="0 0 56 56" aria-hidden="true"><circle class="kit-fill-accent-soft" cx="28" cy="28" r="28"/><text class="kit-card__num" x="28" y="37">1</text></svg><p class="kit-card__title">Wrong answer</p><p class="kit-card__text">asked the time in Tokyo, it skipped the time tool and the answer was wrong</p></li><li class="kit-card"><svg class="kit-card__badge" viewBox="0 0 56 56" aria-hidden="true"><circle class="kit-fill-accent-soft" cx="28" cy="28" r="28"/><text class="kit-card__num" x="28" y="37">2</text></svg><p class="kit-card__title">Mixed turns</p><p class="kit-card__text">the questions were typed; five noise turns from the open mic stay in the medians</p></li><li class="kit-card"><svg class="kit-card__badge" viewBox="0 0 56 56" aria-hidden="true"><circle class="kit-fill-accent-soft" cx="28" cy="28" r="28"/><text class="kit-card__num" x="28" y="37">3</text></svg><p class="kit-card__title">At capture</p><p class="kit-card__text">a cold first Start only loaded the model, since fixed; one Mac, one session</p></li></ul></section></div>
+<footer data-kit="footer" class="kit-footer" data-ground="light"><span class="kit-footer__brand">Dudoxx</span><span class="kit-footer__url">dudoxx.com</span><span class="kit-footer__index">12 / 14</span></footer>
+</section>
+<section class="slide kit-slide" data-slide-id="s-thanks" data-label="s-thanks" data-sec="Credit" data-notes="A warm credit, text only: Liquid AI, https://www.liquid.ai." data-cam-x="0" data-cam-y="0" data-cam-zoom="1" style="--cam-x:0px">
+<header data-kit="header" class="kit-header" data-ground="light"><div class="kit-header__logo"><img data-kit="logo" class="kit-logo kit-logo--lockup" data-brand="dudoxx" src="assets/dudoxx-typography.png" alt="Dudoxx"></div><div class="kit-header__section">Credit</div></header>
+<div class="ddx-camera kit-camera"><section class="kit-pattern kit-pattern--quote" data-kit="pattern:quote" data-kit-pattern="quote" data-slide="s-thanks" data-copy-side="center" data-safe-edge="center" data-safe-box="5 10 58 80" data-ground="light"><div class="kit-copy" data-kit-copy><p class="kit-kicker">Credit</p><h1 class="kit-headline" data-kit-claim>Liquid AI made a voice assistant in one tab possible.</h1><blockquote class="kit-quote"><svg class="kit-quote__mark" viewBox="0 0 96 72" aria-hidden="true" data-kit-visual><path class="kit-fill-accent" d="M0 72V40C0 16 12 4 36 0v16C24 20 20 28 20 40h16v32zm56 0V40C56 16 68 4 92 0v16C80 20 76 28 76 40h16v32z"/></svg><p class="kit-quote__text">Thank you to the Liquid AI team for LFM3-Omni: one model that listens, thinks and speaks, small enough to run in a browser tab, with no audio leaving the room.</p><p class="kit-quote__who"><cite>The Dudoxx team · https://www.liquid.ai</cite></p></blockquote></div></section></div>
+<footer data-kit="footer" class="kit-footer" data-ground="light"><span class="kit-footer__brand">Dudoxx</span><span class="kit-footer__url">dudoxx.com</span><span class="kit-footer__index">13 / 14</span></footer>
+</section>
+<section class="slide kit-slide kit-slide--bookend" data-slide-id="s-outro" data-label="s-outro" data-sec="icedLiquid, a voice assistant in one Chrome tab" data-notes="One next step: rerun it. If your numbers differ, that is a finding." data-cam-x="0" data-cam-y="0" data-cam-zoom="1" style="--cam-x:0px"><div class="ddx-camera kit-camera"><section class="kit-pattern kit-bookend kit-outro" data-kit="outro" data-kit-pattern="outro" data-ground="light" data-brand="dudoxx" data-kit-reveal="wipe" data-scene-ms="2600" data-final-hold-ms="1000" data-duration-ms="3600"><span class="kit-bookend__ring kit-bookend__ring--a" aria-hidden="true"></span><span class="kit-bookend__ring kit-bookend__ring--b" aria-hidden="true"></span><div class="kit-bookend__stack"><div class="kit-bookend__mark"><div class="kit-bookend__logo" data-logo-scale="10"><img data-kit="logo" class="kit-logo kit-logo--lockup" data-brand="dudoxx" src="assets/dudoxx-typography.png" alt="Dudoxx"></div><span class="kit-bookend__rule" aria-hidden="true"></span></div><div class="kit-outro__card"><div class="kit-outro__copy"><h2 class="kit-outro__cta" data-kit-claim data-kit-text>Rerun the session and compare your numbers</h2><span class="kit-bookend__rule" aria-hidden="true"></span><span class="kit-outro__url" data-kit-text>dudoxx.com</span><span class="kit-outro__contact" data-kit-text>Hamburg · Paris</span></div></div></div><div class="kit-outro__sweep" aria-hidden="true"></div></section></div></section>
+  </div></div>
+  <template id="ddx-wipe-mark"><img src="assets/dudoxx-logo.png" alt=""></template>
+  <div id="overview"><h2>Overview</h2><div class="ovsub"></div><div id="ovBody"></div></div>
+  <aside id="carousel"></aside>
+</div>
+<script>
+  // One baked timeline per slide id (the shape MP4 capture loads). Bookends carry
+  // no cue: their GSAP scene is registered on the same DDXCue clock.
+  window.DECK_TIMELINES = {
+  "s-intro": {
+    "durMs": 3800,
+    "cues": []
+  },
+  "s-hook": {
+    "durMs": 7200,
+    "cues": [
+      {
+        "id": "c1",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-headline",
+        "startMs": 150,
+        "durMs": 700
+      },
+      {
+        "id": "c2",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-big__figure, .kit-big__rule, .kit-big__meaning, .kit-evidence",
+        "startMs": 450,
+        "durMs": 650,
+        "stagger": 0.35
+      },
+      {
+        "id": "c3",
+        "target": ".kit-big__figure",
+        "type": "pulse",
+        "startMs": 1200,
+        "durMs": 6000,
+        "period": 2,
+        "amount": 0.04
+      }
+    ]
+  },
+  "s-problem": {
+    "durMs": 7600,
+    "cues": [
+      {
+        "id": "c1",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-headline",
+        "startMs": 150,
+        "durMs": 700
+      },
+      {
+        "id": "c2",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-split__panel--a",
+        "startMs": 450,
+        "durMs": 650,
+        "stagger": 0
+      },
+      {
+        "id": "c3",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-split__panel--b",
+        "startMs": 850,
+        "durMs": 650
+      },
+      {
+        "id": "c4",
+        "target": ".kit-split__arrow path",
+        "type": "draw-path",
+        "startMs": 900,
+        "durMs": 700
+      },
+      {
+        "id": "c5",
+        "target": ".kit-split__panel--b",
+        "type": "pulse",
+        "startMs": 1600,
+        "durMs": 6000,
+        "period": 2.2,
+        "amount": 0.02
+      }
+    ]
+  },
+  "s-guess": {
+    "durMs": 6900,
+    "cues": [
+      {
+        "id": "c1",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-headline",
+        "startMs": 150,
+        "durMs": 700
+      },
+      {
+        "id": "c2",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-quote__text, .kit-quote__who",
+        "startMs": 450,
+        "durMs": 650,
+        "stagger": 0.35
+      },
+      {
+        "id": "c3",
+        "target": ".kit-quote__mark",
+        "type": "pulse",
+        "startMs": 900,
+        "durMs": 6000,
+        "period": 2,
+        "amount": 0.06
+      }
+    ]
+  },
+  "s-arch": {
+    "durMs": 8600,
+    "cues": [
+      {
+        "id": "c1",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-headline",
+        "startMs": 150,
+        "durMs": 700
+      },
+      {
+        "id": "c2",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-flow__node",
+        "startMs": 450,
+        "durMs": 650,
+        "stagger": 0.325
+      },
+      {
+        "id": "c3",
+        "target": ".kit-flow__arrow path",
+        "type": "draw-path",
+        "startMs": 1200,
+        "durMs": 1200,
+        "easing": "ease-in-out"
+      },
+      {
+        "id": "c4",
+        "target": ".kit-flow__node:last-of-type",
+        "type": "pulse",
+        "startMs": 2600,
+        "durMs": 6000,
+        "period": 1.8,
+        "amount": 0.04
+      }
+    ]
+  },
+  "s-tools": {
+    "durMs": 9000,
+    "cues": [
+      {
+        "id": "c1",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-headline",
+        "startMs": 150,
+        "durMs": 700
+      },
+      {
+        "id": "c2",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-evidence",
+        "startMs": 450,
+        "durMs": 650,
+        "stagger": 0.35
+      },
+      {
+        "id": "c3",
+        "target": ".kit-media__img",
+        "type": "ken-burns",
+        "startMs": 0,
+        "durMs": 9000,
+        "from": {
+          "x": 0,
+          "y": 0,
+          "w": 100,
+          "h": 100
+        },
+        "to": {
+          "x": 12,
+          "y": 6,
+          "w": 88,
+          "h": 88
+        }
+      }
+    ]
+  },
+  "s-session": {
+    "durMs": 6000,
+    "cues": [
+      {
+        "id": "c1",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-headline",
+        "startMs": 150,
+        "durMs": 700
+      },
+      {
+        "id": "c2",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-evidence",
+        "startMs": 450,
+        "durMs": 650,
+        "stagger": 0
+      },
+      {
+        "id": "c3",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-chart__value, .kit-chart__label",
+        "startMs": 2050,
+        "durMs": 650,
+        "stagger": 0.05
+      },
+      {
+        "id": "c4",
+        "target": "#s-session-chart",
+        "type": "chart-bars",
+        "startMs": 150,
+        "durMs": 1800,
+        "stagger": 0.14
+      }
+    ]
+  },
+  "s-rates": {
+    "durMs": 7800,
+    "cues": [
+      {
+        "id": "c1",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-headline",
+        "startMs": 150,
+        "durMs": 700
+      },
+      {
+        "id": "c2",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-kpi__tile",
+        "startMs": 450,
+        "durMs": 650,
+        "stagger": 0.35
+      },
+      {
+        "id": "c3",
+        "target": ".kit-kpi__tile:nth-child(1) .kit-kpi__value",
+        "type": "pulse",
+        "startMs": 1200,
+        "durMs": 6000,
+        "period": 2.4,
+        "amount": 0.03
+      },
+      {
+        "id": "c4",
+        "target": ".kit-kpi__tile:nth-child(2) .kit-kpi__value",
+        "type": "pulse",
+        "startMs": 1500,
+        "durMs": 6000,
+        "period": 2.4,
+        "amount": 0.03
+      },
+      {
+        "id": "c5",
+        "target": ".kit-kpi__tile:nth-child(3) .kit-kpi__value",
+        "type": "pulse",
+        "startMs": 1800,
+        "durMs": 6000,
+        "period": 2.4,
+        "amount": 0.03
+      }
+    ]
+  },
+  "s-load": {
+    "durMs": 7600,
+    "cues": [
+      {
+        "id": "c1",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-headline",
+        "startMs": 150,
+        "durMs": 700
+      },
+      {
+        "id": "c2",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-split__panel--a",
+        "startMs": 450,
+        "durMs": 650,
+        "stagger": 0
+      },
+      {
+        "id": "c3",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-split__panel--b",
+        "startMs": 850,
+        "durMs": 650
+      },
+      {
+        "id": "c4",
+        "target": ".kit-split__arrow path",
+        "type": "draw-path",
+        "startMs": 900,
+        "durMs": 700
+      },
+      {
+        "id": "c5",
+        "target": ".kit-split__panel--b",
+        "type": "pulse",
+        "startMs": 1600,
+        "durMs": 6000,
+        "period": 2.2,
+        "amount": 0.02
+      }
+    ]
+  },
+  "s-reproduce": {
+    "durMs": 7800,
+    "cues": [
+      {
+        "id": "c1",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-headline",
+        "startMs": 150,
+        "durMs": 700
+      },
+      {
+        "id": "c2",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-timeline__step",
+        "startMs": 450,
+        "durMs": 650,
+        "stagger": 0.325
+      },
+      {
+        "id": "c3",
+        "target": ".kit-timeline__step:last-child",
+        "type": "pulse",
+        "startMs": 1800,
+        "durMs": 6000,
+        "period": 2,
+        "amount": 0.03
+      }
+    ]
+  },
+  "s-mic": {
+    "durMs": 7200,
+    "cues": [
+      {
+        "id": "c1",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-headline",
+        "startMs": 150,
+        "durMs": 700
+      },
+      {
+        "id": "c2",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-big__figure, .kit-big__rule, .kit-big__meaning, .kit-evidence",
+        "startMs": 450,
+        "durMs": 650,
+        "stagger": 0.35
+      },
+      {
+        "id": "c3",
+        "target": ".kit-big__figure",
+        "type": "pulse",
+        "startMs": 1200,
+        "durMs": 6000,
+        "period": 2,
+        "amount": 0.04
+      }
+    ]
+  },
+  "s-limits": {
+    "durMs": 7600,
+    "cues": [
+      {
+        "id": "c1",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-headline",
+        "startMs": 150,
+        "durMs": 700
+      },
+      {
+        "id": "c2",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-card",
+        "startMs": 450,
+        "durMs": 650,
+        "stagger": 0.35
+      },
+      {
+        "id": "c3",
+        "target": ".kit-card:first-child",
+        "type": "pulse",
+        "startMs": 1600,
+        "durMs": 6000,
+        "period": 2.2,
+        "amount": 0.03
+      }
+    ]
+  },
+  "s-thanks": {
+    "durMs": 6900,
+    "cues": [
+      {
+        "id": "c1",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-headline",
+        "startMs": 150,
+        "durMs": 700
+      },
+      {
+        "id": "c2",
+        "type": "stagger-fade-slide",
+        "easing": "expo",
+        "from": "bottom",
+        "distance": 28,
+        "target": ".kit-quote__text, .kit-quote__who",
+        "startMs": 450,
+        "durMs": 650,
+        "stagger": 0.35
+      },
+      {
+        "id": "c3",
+        "target": ".kit-quote__mark",
+        "type": "pulse",
+        "startMs": 900,
+        "durMs": 6000,
+        "period": 2,
+        "amount": 0.06
+      }
+    ]
+  },
+  "s-outro": {
+    "durMs": 3600,
+    "cues": []
+  }
+};
+  // The live deck: one master timeline, one scene per slide (engine/deck-anim.js).
+  window.__TIMELINE_V3 = {"schema":3,"deckId":"icedLiquid, a voice assistant in one Chrome tab","lang":"en","fps":30,"fpsRational":{"num":30,"den":1},"totalMs":113200,"status":"complete","missing":[],"scenes":[{"id":"s-intro","label":"s-intro","section":"icedLiquid, a voice assistant in one Chrome tab","pictureStartMs":0,"durMs":5000,"cues":[]},{"id":"s-hook","label":"icedLiquid answers a question in about one second.","section":"Hook","pictureStartMs":5000,"durMs":8400,"cues":[{"id":"c1","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-headline","at":{"ms":150},"startMs":5150,"durMs":700,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28}},{"id":"c2","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-big__figure, .kit-big__rule, .kit-big__meaning, .kit-evidence","at":{"ms":450},"startMs":5450,"durMs":650,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28,"stagger":0.35}},{"id":"c3","type":"pulse","preset":"pulse","target":".kit-big__figure","at":{"ms":1200},"startMs":6200,"durMs":6000,"lead":false,"params":{"period":2,"amount":0.04}}]},{"id":"s-problem","label":"A typical voice assistant sends your audio to a server.","section":"Problem","pictureStartMs":13400,"durMs":8800,"cues":[{"id":"c1","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-headline","at":{"ms":150},"startMs":13550,"durMs":700,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28}},{"id":"c2","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-split__panel--a","at":{"ms":450},"startMs":13850,"durMs":650,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28,"stagger":0}},{"id":"c3","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-split__panel--b","at":{"ms":850},"startMs":14250,"durMs":650,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28}},{"id":"c4","type":"draw-path","preset":"draw-path","target":".kit-split__arrow path","at":{"ms":900},"startMs":14300,"durMs":700,"lead":false,"params":{}},{"id":"c5","type":"pulse","preset":"pulse","target":".kit-split__panel--b","at":{"ms":1600},"startMs":15000,"durMs":6000,"lead":false,"params":{"period":2.2,"amount":0.02}}]},{"id":"s-guess","label":"A small model that guesses is worse than no model.","section":"Problem","pictureStartMs":22200,"durMs":8100,"cues":[{"id":"c1","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-headline","at":{"ms":150},"startMs":22350,"durMs":700,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28}},{"id":"c2","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-quote__text, .kit-quote__who","at":{"ms":450},"startMs":22650,"durMs":650,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28,"stagger":0.35}},{"id":"c3","type":"pulse","preset":"pulse","target":".kit-quote__mark","at":{"ms":900},"startMs":23100,"durMs":6000,"lead":false,"params":{"period":2,"amount":0.06}}]},{"id":"s-arch","label":"One model hears, thinks and speaks inside the tab.","section":"How it works","pictureStartMs":30300,"durMs":9800,"cues":[{"id":"c1","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-headline","at":{"ms":150},"startMs":30450,"durMs":700,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28}},{"id":"c2","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-flow__node","at":{"ms":450},"startMs":30750,"durMs":650,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28,"stagger":0.325}},{"id":"c3","type":"draw-path","preset":"draw-path","target":".kit-flow__arrow path","at":{"ms":1200},"startMs":31500,"durMs":1200,"lead":false,"params":{"easing":"ease-in-out"}},{"id":"c4","type":"pulse","preset":"pulse","target":".kit-flow__node:last-of-type","at":{"ms":2600},"startMs":32900,"durMs":6000,"lead":false,"params":{"period":1.8,"amount":0.04}}]},{"id":"s-tools","label":"Tools make the answers of a small model checkable.","section":"How it works","pictureStartMs":40100,"durMs":10200,"cues":[{"id":"c1","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-headline","at":{"ms":150},"startMs":40250,"durMs":700,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28}},{"id":"c2","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-evidence","at":{"ms":450},"startMs":40550,"durMs":650,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28,"stagger":0.35}},{"id":"c3","type":"ken-burns","preset":"ken-burns","target":".kit-media__img","at":{"ms":0},"startMs":40100,"durMs":9000,"lead":false,"params":{"from":{"x":0,"y":0,"w":100,"h":100},"to":{"x":12,"y":6,"w":88,"h":88}}}]},{"id":"s-session","label":"The brain takes the largest share of a median reply.","section":"Measured","pictureStartMs":50300,"durMs":7200,"cues":[{"id":"c1","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-headline","at":{"ms":150},"startMs":50450,"durMs":700,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28}},{"id":"c2","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-evidence","at":{"ms":450},"startMs":50750,"durMs":650,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28,"stagger":0}},{"id":"c3","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-chart__value, .kit-chart__label","at":{"ms":2050},"startMs":52350,"durMs":650,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28,"stagger":0.05}},{"id":"c4","type":"chart-bars","preset":"chart-bars","target":"#s-session-chart","at":{"ms":150},"startMs":50450,"durMs":1800,"lead":false,"params":{"stagger":0.14}}]},{"id":"s-rates","label":"Generation stayed steady while the conversation grew.","section":"Measured","pictureStartMs":57500,"durMs":9000,"cues":[{"id":"c1","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-headline","at":{"ms":150},"startMs":57650,"durMs":700,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28}},{"id":"c2","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-kpi__tile","at":{"ms":450},"startMs":57950,"durMs":650,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28,"stagger":0.35}},{"id":"c3","type":"pulse","preset":"pulse","target":".kit-kpi__tile:nth-child(1) .kit-kpi__value","at":{"ms":1200},"startMs":58700,"durMs":6000,"lead":false,"params":{"period":2.4,"amount":0.03}},{"id":"c4","type":"pulse","preset":"pulse","target":".kit-kpi__tile:nth-child(2) .kit-kpi__value","at":{"ms":1500},"startMs":59000,"durMs":6000,"lead":false,"params":{"period":2.4,"amount":0.03}},{"id":"c5","type":"pulse","preset":"pulse","target":".kit-kpi__tile:nth-child(3) .kit-kpi__value","at":{"ms":1800},"startMs":59300,"durMs":6000,"lead":false,"params":{"period":2.4,"amount":0.03}}]},{"id":"s-load","label":"The browser cache turns a slow first load into a short wait.","section":"Measured","pictureStartMs":66500,"durMs":8800,"cues":[{"id":"c1","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-headline","at":{"ms":150},"startMs":66650,"durMs":700,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28}},{"id":"c2","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-split__panel--a","at":{"ms":450},"startMs":66950,"durMs":650,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28,"stagger":0}},{"id":"c3","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-split__panel--b","at":{"ms":850},"startMs":67350,"durMs":650,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28}},{"id":"c4","type":"draw-path","preset":"draw-path","target":".kit-split__arrow path","at":{"ms":900},"startMs":67400,"durMs":700,"lead":false,"params":{}},{"id":"c5","type":"pulse","preset":"pulse","target":".kit-split__panel--b","at":{"ms":1600},"startMs":68100,"durMs":6000,"lead":false,"params":{"period":2.2,"amount":0.02}}]},{"id":"s-reproduce","label":"Anyone with a WebGPU Mac can rerun this session.","section":"Reproduce","pictureStartMs":75300,"durMs":9000,"cues":[{"id":"c1","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-headline","at":{"ms":150},"startMs":75450,"durMs":700,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28}},{"id":"c2","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-timeline__step","at":{"ms":450},"startMs":75750,"durMs":650,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28,"stagger":0.325}},{"id":"c3","type":"pulse","preset":"pulse","target":".kit-timeline__step:last-child","at":{"ms":1800},"startMs":77100,"durMs":6000,"lead":false,"params":{"period":2,"amount":0.03}}]},{"id":"s-mic","label":"Browser microphone recognition is still in diagnosis.","section":"Open gaps","pictureStartMs":84300,"durMs":8400,"cues":[{"id":"c1","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-headline","at":{"ms":150},"startMs":84450,"durMs":700,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28}},{"id":"c2","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-big__figure, .kit-big__rule, .kit-big__meaning, .kit-evidence","at":{"ms":450},"startMs":84750,"durMs":650,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28,"stagger":0.35}},{"id":"c3","type":"pulse","preset":"pulse","target":".kit-big__figure","at":{"ms":1200},"startMs":85500,"durMs":6000,"lead":false,"params":{"period":2,"amount":0.04}}]},{"id":"s-limits","label":"The session also shows where icedLiquid still fails.","section":"Open gaps","pictureStartMs":92700,"durMs":8800,"cues":[{"id":"c1","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-headline","at":{"ms":150},"startMs":92850,"durMs":700,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28}},{"id":"c2","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-card","at":{"ms":450},"startMs":93150,"durMs":650,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28,"stagger":0.35}},{"id":"c3","type":"pulse","preset":"pulse","target":".kit-card:first-child","at":{"ms":1600},"startMs":94300,"durMs":6000,"lead":false,"params":{"period":2.2,"amount":0.03}}]},{"id":"s-thanks","label":"Liquid AI made a voice assistant in one tab possible.","section":"Credit","pictureStartMs":101500,"durMs":8100,"cues":[{"id":"c1","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-headline","at":{"ms":150},"startMs":101650,"durMs":700,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28}},{"id":"c2","type":"stagger-fade-slide","preset":"stagger-fade-slide","target":".kit-quote__text, .kit-quote__who","at":{"ms":450},"startMs":101950,"durMs":650,"lead":false,"params":{"easing":"expo","from":"bottom","distance":28,"stagger":0.35}},{"id":"c3","type":"pulse","preset":"pulse","target":".kit-quote__mark","at":{"ms":900},"startMs":102400,"durMs":6000,"lead":false,"params":{"period":2,"amount":0.06}}]},{"id":"s-outro","label":"s-outro","section":"icedLiquid, a voice assistant in one Chrome tab","pictureStartMs":109600,"durMs":3600,"cues":[]}]};
+</script>
+<script>
+  // Start every brand face now: faces load lazily, and the bookend font check
+  // runs after document.fonts.ready, which only waits for faces already loading.
+  if (document.fonts) document.fonts.forEach(function (f) {
+    f.load().catch(function () { console.error('deck: font ' + f.family + ' ' + f.weight + ' failed to load'); });
+  });
+</script>
+<script src="assets/cue-runtime.js"></script>
+<script src="assets/cue-types-reveal.js"></script>
+<script src="assets/cue-types-motion.js"></script>
+<script src="assets/cue-types-data.js"></script>
+<script src="assets/master-timeline.js"></script>
+<script src="assets/transitions.js"></script>
+<script src="assets/motion-presets.js"></script>
+<script src="assets/stage-camera.js"></script>
+<script src="assets/gsap.min.js"></script>
+<script src="assets/SplitText.min.js"></script>
+<script src="assets/DrawSVGPlugin.min.js"></script>
+<script src="assets/gsap-scene.js"></script>
+<script src="assets/deck-engine.js"></script>
+<script src="assets/deck-anim.js"></script>
+
+<script>
+if (document.querySelector('[data-kit="intro"]')) {
+(function bookendRuntime(CFG, build) {
+  'use strict';
+  var root = document.querySelector('[data-kit="' + CFG.kind + '"]');
+  function fail(msg) {
+    var m = 'kit/' + CFG.kind + ': ' + msg;
+    (window.__kitErrors = window.__kitErrors || []).push(m);
+    console.error(m);
+    throw new Error(m);
+  }
+  if (!root) fail('root [data-kit="' + CFG.kind + '"] not found');
+  var G = window.gsap;
+  if (!G || !window.SplitText || !window.DrawSVGPlugin || !window.DDXKit || !window.DDXKit.scene || !window.DDXCue) {
+    fail('load the cue runtime, vendor/gsap (gsap, SplitText, DrawSVGPlugin) and kit/gsap-scene.js first');
+  }
+  var GENERIC = /^(system-ui|-apple-system|blinkmacsystemfont|sans-serif|serif|monospace|ui-monospace|ui-sans-serif|ui-serif|cursive|fantasy|emoji)$/i;
+  var pen = document.createElement('canvas').getContext('2d');
+  function width(f) { pen.font = '700 40px ' + f; return pen.measureText('mmmmmmmmmmlli WQ@#0Oo').width; }
+  function present(fam) {
+    return ['monospace', 'serif', 'sans-serif'].some(function (g) { return width('"' + fam + '", ' + g) !== width(g); });
+  }
+  // A face is usable when one brand-listed family (not a generic) is installed.
+  function checkFonts() {
+    root.querySelectorAll('[data-kit-text]').forEach(function (el) {
+      var fams = getComputedStyle(el).fontFamily.split(',')
+        .map(function (s) { return s.trim().replace(/^["']|["']$/g, ''); })
+        .filter(function (f) { return f && !GENERIC.test(f); });
+      var ok = fams.filter(present);
+      if (!ok.length) fail('FONT NOT USABLE: none of [' + fams.join(', ') + '] is installed (.' + el.className.split(' ')[0] + ')');
+      if (ok[0] !== fams[0]) console.warn('kit/' + CFG.kind + ': ' + fams[0] + ' not installed, using brand fallback ' + ok[0]);
+    });
+  }
+  // Official logo reveal. SVG: DrawSVG stroke-in in each shape's OWN fill colour,
+  // then the fill; the stroke fades to 0 so the end frame is the file as drawn.
+  // PNG: clip-path wipe (plate first, then the file) + scale settle.
+  // box: the .kit-bookend__logo to reveal (default the first); its data-reveal
+  // (hero layout: lockup and mark may differ) outranks CFG.reveal.
+  // settle:false skips the 1.06 -> 1 scale (hero layout: a scaled small SVG/PNG
+  // rasterises differently by seek direction).
+  function revealLogo(tl, at, box, settle) {
+    box = box || root.querySelector('.kit-bookend__logo');
+    if (!box) return;
+    var reveal = box.getAttribute('data-reveal') || CFG.reveal;
+    if (reveal === 'none') return;
+    if (settle !== false) tl.fromTo(box, { scale: 1.06 }, { scale: 1, duration: 1.8, ease: 'expo.out' }, at);
+    if (reveal === 'draw') {
+      var shapes = box.querySelectorAll('svg path, svg circle, svg ellipse, svg rect, svg polygon, svg polyline, svg line');
+      shapes.forEach(function (el) {
+        var own = el.getAttribute('fill') || getComputedStyle(el).fill;
+        if (own && own !== 'none') G.set(el, { attr: { stroke: own, 'stroke-width': CFG.strokeW } });
+      });
+      // A 0-length round-capped dash still paints a dot, and its sub-pixel offset
+      // differs by seek direction: each stroke stays at opacity 0 until its draw starts.
+      tl.fromTo(shapes, { strokeOpacity: 0 }, { strokeOpacity: 1, duration: 0.01, ease: 'none', stagger: { amount: 0.35 } }, at);
+      tl.fromTo(shapes, { drawSVG: '0%', fillOpacity: 0 },
+        { drawSVG: '100%', duration: 0.95, ease: 'expo.out', stagger: { amount: 0.35 } }, at);
+      tl.to(shapes, { fillOpacity: 1, duration: 0.55, ease: 'expo.out', stagger: { amount: 0.2 } }, at + 0.7);
+      tl.fromTo(shapes, { strokeOpacity: 1 }, { strokeOpacity: 0, duration: 0.45, ease: 'expo.out', immediateRender: false }, at + 1.0);
+      var plateS = box.querySelector('.kit-logo-plate');
+      if (plateS) tl.fromTo(plateS, { clipPath: 'inset(0% 100% 0% 0% round 28px)' }, { clipPath: 'inset(0% 0% 0% 0% round 28px)', duration: 0.8, ease: 'expo.out' }, at - 0.1);
+      return;
+    }
+    var plate = box.querySelector('.kit-logo-plate');
+    var img = box.querySelector('img');
+    if (plate) {
+      tl.fromTo(plate, { clipPath: 'inset(0% 100% 0% 0% round 28px)' }, { clipPath: 'inset(0% 0% 0% 0% round 28px)', duration: 0.85, ease: 'expo.out' }, at);
+      at += 0.18;
+    }
+    if (img) tl.fromTo(img, { clipPath: 'inset(-2% 100% -2% 0%)' }, { clipPath: 'inset(-2% 0% -2% 0%)', duration: 1.0, ease: 'expo.out' }, at);
+  }
+  // Offset that puts the mark (logo + rule) at the frame centre; layout px, so a
+  // scaled deck player gets the same value.
+  function centreOffset() {
+    var stack = root.querySelector('.kit-bookend__stack');
+    var mark = root.querySelector('.kit-bookend__mark');
+    return root.offsetHeight / 2 - (stack.offsetTop + mark.offsetTop + mark.offsetHeight / 2);
+  }
+  // Hero title: step data-size xl -> l -> m until it holds one line (layout px,
+  // so a scaled deck player gets the same step). Runs once, before SplitText.
+  function fitTitle() {
+    var el = root.querySelector('.kit-intro__title');
+    if (!el) return;
+    var steps = ['xl', 'l', 'm'];
+    for (var i = steps.indexOf(el.getAttribute('data-size')); i >= 0 && i < steps.length; i++) {
+      el.setAttribute('data-size', steps[i]);
+      if (el.offsetHeight < parseFloat(getComputedStyle(el).fontSize) * 1.5) return;
+    }
+  }
+  function splitLines(el) {
+    return new window.SplitText(el, { type: 'lines', mask: 'lines', linesClass: 'kit-split-line' }).lines;
+  }
+  var ready = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+  ready.then(function () {
+    checkFonts();
+    fitTitle();
+    G.registerPlugin(window.SplitText, window.DrawSVGPlugin);
+    window.DDXKit.scene('kit-' + CFG.kind, function (tl) {
+      build(tl, root, CFG, G, { revealLogo: revealLogo, centreOffset: centreOffset, splitLines: splitLines });
+      tl.set({}, {}, CFG.endS);
+    });
+    root.setAttribute('data-kit-ready', 'true');
+    window.__bookendReady = (window.__bookendReady || 0) + 1;
+  }).catch(function (e) {
+    if (!/^kit\//.test(e.message)) fail(e.message);
+    throw e;
+  });
+})({"kind":"intro","strokeW":1.2,"reveal":"wipe","t":{"logo":0.15,"title":0.6,"hook":1.3,"promise":2.2,"chips":2.8},"endS":3.8}, function introHeroBuild(tl, root, CFG, G, H) {
+  var T = CFG.t;
+  var q = function (s) { return root.querySelector(s); };
+  var all = function (s) { return root.querySelectorAll(s); };
+  var bd = q('.kit-intro__backdrop');
+  if (bd) {
+    var from = bd.getAttribute('data-fit') === 'full' ? 'inset(0% 0% 0% 0%)' : 'inset(0% 0% 0% 100%)';
+    if (bd.getAttribute('data-fit') !== 'full') tl.fromTo(bd, { clipPath: from }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.2, ease: 'expo.inOut' }, 0);
+    tl.fromTo(q('.kit-intro__backdrop-img'), { scale: 1.12 }, { scale: 1, duration: CFG.endS, ease: 'none' }, 0);
+  }
+  var disc = q('.kit-intro__disc');
+  if (disc) tl.fromTo(disc, { scale: 0.86, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 1.4, ease: 'expo.out' }, 0.05);
+  var orbits = all('.kit-intro__orbit');
+  if (orbits.length) tl.fromTo(orbits, { scale: 0.7, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 1.8, ease: 'expo.out', stagger: 0.14 }, 0.1);
+  var brand = q('.kit-intro__brand .kit-bookend__logo');
+  if (brand) H.revealLogo(tl, T.logo, brand, false);
+  var rule = q('.kit-intro__eyebrow-rule');
+  if (rule) tl.fromTo(rule, { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: 'expo.out' }, T.logo + 0.2);
+  var eye = q('.kit-intro__eyebrow-text');
+  if (eye) tl.fromTo(eye, { autoAlpha: 0, x: -16 }, { autoAlpha: 1, x: 0, duration: 0.7, ease: 'expo.out' }, T.logo + 0.3);
+  var arcs = all('.kit-intro__arc');
+  // A 0-length round-capped dash still paints a dot: each arc stays hidden until it starts.
+  arcs.forEach(function (arc, i) {
+    var at = 0.45 + i * 0.18;
+    tl.fromTo(arc, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.05, ease: 'none' }, at);
+    tl.fromTo(arc, { drawSVG: '0%' }, { drawSVG: '100%', duration: 1.4, ease: 'expo.inOut' }, at);
+  });
+  var dots = all('.kit-intro__dot');
+  if (dots.length) tl.fromTo(dots, { scale: 0, autoAlpha: 0, transformOrigin: '50% 50%' }, { scale: 1, autoAlpha: 1, duration: 0.5, ease: 'expo.out', stagger: 0.12 }, 1.35);
+  var emblem = q('.kit-intro__emblem .kit-bookend__logo');
+  if (emblem) H.revealLogo(tl, T.logo + 0.4, emblem, false);
+  var title = q('.kit-intro__title');
+  if (title) tl.fromTo(H.splitLines(title), { yPercent: 112 }, { yPercent: 0, duration: 0.95, ease: 'expo.out', stagger: 0.09 }, T.title);
+  tl.fromTo(H.splitLines(q('.kit-intro__hook')), { yPercent: 112 },
+    { yPercent: 0, duration: 0.9, ease: 'expo.out', stagger: 0.08 }, T.hook);
+  tl.fromTo(q('.kit-intro__promise'), { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.85, ease: 'expo.out' }, T.promise);
+  var chips = all('.kit-intro__chip');
+  if (chips.length) tl.fromTo(chips, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: 'expo.out', stagger: 0.08 }, T.chips);
+  var meta = q('.kit-intro__meta');
+  if (meta) tl.fromTo(meta, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'expo.out' }, T.promise + 0.2);
+});
+}
+</script>
+<script>
+if (document.querySelector('[data-kit="outro"]')) {
+(function bookendRuntime(CFG, build) {
+  'use strict';
+  var root = document.querySelector('[data-kit="' + CFG.kind + '"]');
+  function fail(msg) {
+    var m = 'kit/' + CFG.kind + ': ' + msg;
+    (window.__kitErrors = window.__kitErrors || []).push(m);
+    console.error(m);
+    throw new Error(m);
+  }
+  if (!root) fail('root [data-kit="' + CFG.kind + '"] not found');
+  var G = window.gsap;
+  if (!G || !window.SplitText || !window.DrawSVGPlugin || !window.DDXKit || !window.DDXKit.scene || !window.DDXCue) {
+    fail('load the cue runtime, vendor/gsap (gsap, SplitText, DrawSVGPlugin) and kit/gsap-scene.js first');
+  }
+  var GENERIC = /^(system-ui|-apple-system|blinkmacsystemfont|sans-serif|serif|monospace|ui-monospace|ui-sans-serif|ui-serif|cursive|fantasy|emoji)$/i;
+  var pen = document.createElement('canvas').getContext('2d');
+  function width(f) { pen.font = '700 40px ' + f; return pen.measureText('mmmmmmmmmmlli WQ@#0Oo').width; }
+  function present(fam) {
+    return ['monospace', 'serif', 'sans-serif'].some(function (g) { return width('"' + fam + '", ' + g) !== width(g); });
+  }
+  // A face is usable when one brand-listed family (not a generic) is installed.
+  function checkFonts() {
+    root.querySelectorAll('[data-kit-text]').forEach(function (el) {
+      var fams = getComputedStyle(el).fontFamily.split(',')
+        .map(function (s) { return s.trim().replace(/^["']|["']$/g, ''); })
+        .filter(function (f) { return f && !GENERIC.test(f); });
+      var ok = fams.filter(present);
+      if (!ok.length) fail('FONT NOT USABLE: none of [' + fams.join(', ') + '] is installed (.' + el.className.split(' ')[0] + ')');
+      if (ok[0] !== fams[0]) console.warn('kit/' + CFG.kind + ': ' + fams[0] + ' not installed, using brand fallback ' + ok[0]);
+    });
+  }
+  // Official logo reveal. SVG: DrawSVG stroke-in in each shape's OWN fill colour,
+  // then the fill; the stroke fades to 0 so the end frame is the file as drawn.
+  // PNG: clip-path wipe (plate first, then the file) + scale settle.
+  // box: the .kit-bookend__logo to reveal (default the first); its data-reveal
+  // (hero layout: lockup and mark may differ) outranks CFG.reveal.
+  // settle:false skips the 1.06 -> 1 scale (hero layout: a scaled small SVG/PNG
+  // rasterises differently by seek direction).
+  function revealLogo(tl, at, box, settle) {
+    box = box || root.querySelector('.kit-bookend__logo');
+    if (!box) return;
+    var reveal = box.getAttribute('data-reveal') || CFG.reveal;
+    if (reveal === 'none') return;
+    if (settle !== false) tl.fromTo(box, { scale: 1.06 }, { scale: 1, duration: 1.8, ease: 'expo.out' }, at);
+    if (reveal === 'draw') {
+      var shapes = box.querySelectorAll('svg path, svg circle, svg ellipse, svg rect, svg polygon, svg polyline, svg line');
+      shapes.forEach(function (el) {
+        var own = el.getAttribute('fill') || getComputedStyle(el).fill;
+        if (own && own !== 'none') G.set(el, { attr: { stroke: own, 'stroke-width': CFG.strokeW } });
+      });
+      // A 0-length round-capped dash still paints a dot, and its sub-pixel offset
+      // differs by seek direction: each stroke stays at opacity 0 until its draw starts.
+      tl.fromTo(shapes, { strokeOpacity: 0 }, { strokeOpacity: 1, duration: 0.01, ease: 'none', stagger: { amount: 0.35 } }, at);
+      tl.fromTo(shapes, { drawSVG: '0%', fillOpacity: 0 },
+        { drawSVG: '100%', duration: 0.95, ease: 'expo.out', stagger: { amount: 0.35 } }, at);
+      tl.to(shapes, { fillOpacity: 1, duration: 0.55, ease: 'expo.out', stagger: { amount: 0.2 } }, at + 0.7);
+      tl.fromTo(shapes, { strokeOpacity: 1 }, { strokeOpacity: 0, duration: 0.45, ease: 'expo.out', immediateRender: false }, at + 1.0);
+      var plateS = box.querySelector('.kit-logo-plate');
+      if (plateS) tl.fromTo(plateS, { clipPath: 'inset(0% 100% 0% 0% round 28px)' }, { clipPath: 'inset(0% 0% 0% 0% round 28px)', duration: 0.8, ease: 'expo.out' }, at - 0.1);
+      return;
+    }
+    var plate = box.querySelector('.kit-logo-plate');
+    var img = box.querySelector('img');
+    if (plate) {
+      tl.fromTo(plate, { clipPath: 'inset(0% 100% 0% 0% round 28px)' }, { clipPath: 'inset(0% 0% 0% 0% round 28px)', duration: 0.85, ease: 'expo.out' }, at);
+      at += 0.18;
+    }
+    if (img) tl.fromTo(img, { clipPath: 'inset(-2% 100% -2% 0%)' }, { clipPath: 'inset(-2% 0% -2% 0%)', duration: 1.0, ease: 'expo.out' }, at);
+  }
+  // Offset that puts the mark (logo + rule) at the frame centre; layout px, so a
+  // scaled deck player gets the same value.
+  function centreOffset() {
+    var stack = root.querySelector('.kit-bookend__stack');
+    var mark = root.querySelector('.kit-bookend__mark');
+    return root.offsetHeight / 2 - (stack.offsetTop + mark.offsetTop + mark.offsetHeight / 2);
+  }
+  // Hero title: step data-size xl -> l -> m until it holds one line (layout px,
+  // so a scaled deck player gets the same step). Runs once, before SplitText.
+  function fitTitle() {
+    var el = root.querySelector('.kit-intro__title');
+    if (!el) return;
+    var steps = ['xl', 'l', 'm'];
+    for (var i = steps.indexOf(el.getAttribute('data-size')); i >= 0 && i < steps.length; i++) {
+      el.setAttribute('data-size', steps[i]);
+      if (el.offsetHeight < parseFloat(getComputedStyle(el).fontSize) * 1.5) return;
+    }
+  }
+  function splitLines(el) {
+    return new window.SplitText(el, { type: 'lines', mask: 'lines', linesClass: 'kit-split-line' }).lines;
+  }
+  var ready = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+  ready.then(function () {
+    checkFonts();
+    fitTitle();
+    G.registerPlugin(window.SplitText, window.DrawSVGPlugin);
+    window.DDXKit.scene('kit-' + CFG.kind, function (tl) {
+      build(tl, root, CFG, G, { revealLogo: revealLogo, centreOffset: centreOffset, splitLines: splitLines });
+      tl.set({}, {}, CFG.endS);
+    });
+    root.setAttribute('data-kit-ready', 'true');
+    window.__bookendReady = (window.__bookendReady || 0) + 1;
+  }).catch(function (e) {
+    if (!/^kit\//.test(e.message)) fail(e.message);
+    throw e;
+  });
+})({"kind":"outro","strokeW":1.2,"reveal":"wipe","t":{"logo":0.55,"rise":1.15,"card":1.4},"endS":3.6}, function outroBuild(tl, root, CFG, G, H) {
+  var T = CFG.t;
+  var q = function (s) { return root.querySelector(s); };
+  var sweep = q('.kit-outro__sweep');
+  var mark = q('.kit-bookend__mark');
+  var card = q('.kit-outro__card');
+  // One band (24% wide, parked off the left edge) crosses and exits: xPercent 520 = 124.8% of frame.
+  tl.fromTo(sweep, { xPercent: 0 }, { xPercent: 520, duration: 1.1, ease: 'expo.inOut' }, 0);
+  tl.fromTo(root.querySelectorAll('.kit-bookend__ring'), { scale: 0.62, autoAlpha: 0 },
+    { scale: 1, autoAlpha: 1, duration: 1.6, ease: 'expo.out', stagger: 0.12 }, 0.5);
+  tl.fromTo(mark, { y: H.centreOffset() }, { y: 0, duration: 0.9, ease: 'expo.inOut' }, T.rise);
+  H.revealLogo(tl, T.logo);
+  tl.fromTo(q('.kit-bookend__mark > .kit-bookend__rule'), { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: 'expo.out' }, T.logo + 0.5);
+  tl.fromTo(card, { autoAlpha: 0, y: 64 }, { autoAlpha: 1, y: 0, duration: 0.9, ease: 'expo.out' }, T.card);
+  tl.fromTo(H.splitLines(q('.kit-outro__cta')), { yPercent: 112 }, { yPercent: 0, duration: 0.8, ease: 'expo.out', stagger: 0.08 }, T.card + 0.15);
+  tl.fromTo(q('.kit-outro__card .kit-bookend__rule'), { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: 'expo.out' }, T.card + 0.35);
+  tl.fromTo(root.querySelectorAll('.kit-outro__url, .kit-outro__contact'), { autoAlpha: 0, y: 18 },
+    { autoAlpha: 1, y: 0, duration: 0.6, ease: 'expo.out', stagger: 0.1 }, T.card + 0.4);
+  var qr = q('.kit-qr');
+  if (qr) tl.fromTo(qr, { autoAlpha: 0, scale: 0.92 }, { autoAlpha: 1, scale: 1, duration: 0.6, ease: 'expo.out' }, T.card + 0.5);
+});
+}
+</script>
+</body>
+</html>
